@@ -38,6 +38,20 @@ export const DashboardLinks = [
   },
   // {
   //   id: 5,
+  //   name: "Solved Assignments",
+  //   path: "/dashboard/solved-assignments",
+  //   type: ACCOUNT_TYPE.INSTRUCTOR,
+  //   // icon:"VscAdd"
+  // },
+  {
+    id: 6,
+    name: "Students",
+    path: "/dashboard/students",
+    type: ACCOUNT_TYPE.INSTRUCTOR,
+    // icon:"VscAdd"
+  },
+  // {
+  //   id: 5,
   //   name: "Notification",
   //   path: "/dashboard/notification",
   //   type: ACCOUNT_TYPE.STUDENT,

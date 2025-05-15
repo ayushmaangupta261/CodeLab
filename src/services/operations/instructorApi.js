@@ -15,6 +15,7 @@ const {
   EDIT_DETAILS_API,
   GET_MY_STUDENTS_API,
   GET_MY_QUESTIONS_API,
+  GET_STUDENT_QUESTIONS_API,
 } = instructorEndpoints;
 
 export const getAllCollegeList = (token) => async (dispatch) => {
@@ -189,7 +190,7 @@ export const logoutInstructor = (navigate, token) => async (dispatch) => {
 
 // get my students
 export const getMyStudents = (token) => async (dispatch) => {
-  const toastId = toast.loading("Finding Enrolled Students");
+  const toastId = toast.loading("Finding Your Students");
 
   try {
     const response = await apiConnector(
@@ -209,8 +210,8 @@ export const getMyStudents = (token) => async (dispatch) => {
     }
 
     toast.dismiss(toastId);
-    toast.success("Enrolled Students fetched successfully");
-    return response.data.data.students;
+    toast.success("Your Students fetched successfully");
+    return response?.data?.data;
   } catch (error) {
     console.log("Error in get my students api -> ", error);
     toast.dismiss(toastId);
@@ -247,6 +248,40 @@ export const getMyQuestions = (token) => async (dispatch) => {
     console.log("Error in get my questions api -> ", error);
     toast.dismiss(toastId);
     toast.error("Error in finding my questions");
+    return false;
+  }
+};
+
+// get rooms
+// get my rooms thunk
+export const getStudentRooms = (token, roomIds) => async (dispatch) => {
+  const toastId = toast.loading("Finding your rooms");
+
+  try {
+    const response = await apiConnector(
+      "POST",
+      GET_STUDENT_QUESTIONS_API,
+      { roomIds }, // pass roomIds array in body
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    );
+
+    console.log("Response in rooms api -> ", response);
+
+    if (!response || !response.data.success) {
+      toast.dismiss(toastId);
+      toast.error("Error in finding your rooms");
+      return false;
+    }
+
+    toast.dismiss(toastId);
+    toast.success("Your rooms found successfully");
+    return response.data.data; // your rooms array
+  } catch (error) {
+    console.log("Error in get my rooms api -> ", error);
+    toast.dismiss(toastId);
+    toast.error("Error in finding my rooms");
     return false;
   }
 };

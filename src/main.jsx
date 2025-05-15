@@ -26,6 +26,9 @@ import CreateQuestion from "./components/Dashboard/DashboardComponent/CreateQues
 import About from "./pages/AboutUs.jsx";
 import Whiteboard from "./components/Terminal/WhiteBoard.jsx";
 import ViewSolvedQuestions from "./components/Dashboard/DashboardComponent/ViewSolvedQuestions.jsx";
+import Students from "./components/Dashboard/DashboardComponent/Students.jsx";
+import AssignmentsSoved from "./components/Dashboard/DashboardComponent/Instructor-Students/AssignmentsSoved.jsx";
+import StudentProjects from "./components/Dashboard/DashboardComponent/Instructor-Students/StudentProjects.jsx";
 
 const router = createBrowserRouter([
   {
@@ -103,6 +106,18 @@ const router = createBrowserRouter([
           {
             path: "/dashboard/settings",
             element: <Settings />,
+          },
+          {
+            path: "/dashboard/students",
+            element: <Students />,
+          },
+          {
+            path: "/dashboard/solved-assignments",
+            element: <AssignmentsSoved />,
+          },
+          {
+            path: "/dashboard/student-projects",
+            element: <StudentProjects />,
           },
           {
             path: "/dashboard/questions-Solved/view-solved-questions",

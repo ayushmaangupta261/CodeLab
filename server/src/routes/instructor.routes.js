@@ -7,7 +7,8 @@ import {
   loginInstructor,
   logoutInstructor,
   getMyStudents,
-  getMyQuestions
+  getMyQuestions,
+  getRoomsByRoomIds,
 } from "../controllers/instructor.controller.js";
 import authMiddleware from "../middlewares/auth.middleware.js";
 
@@ -24,5 +25,7 @@ router.route("/edit-details").post(authMiddleware, editDetails);
 router.route("/post-question").post(authMiddleware, createQuestion); // add middleware
 router.route("/get-my-students").post(authMiddleware, getMyStudents);
 router.route("/get-my-questions").post(authMiddleware, getMyQuestions);
+
+router.route("/find-room-by-email").post(authMiddleware, getRoomsByRoomIds);
 
 export default router;

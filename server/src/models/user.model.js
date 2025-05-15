@@ -31,8 +31,7 @@ const studentSchema = Schema(
     },
     accountType: {
       type: String,
-      enum: ["Institute", "Student", "Instructor"],
-      required: true,
+      default: "Student",
     },
     refreshToken: {
       type: String,
@@ -54,10 +53,14 @@ const studentSchema = Schema(
       type: Number,
     },
 
-    questionsSolved: {
-      type: [Schema.Types.ObjectId],
-      ref: "Question",
-    },
+    questionsSolved: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Question",
+      },
+    ],
+
+    room: [{ type: Schema.Types.ObjectId, ref: "Room" }],
 
     // // for instructor
     // questions: [

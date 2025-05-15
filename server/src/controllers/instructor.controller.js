@@ -3,6 +3,7 @@ import { Question } from "../models/question.model.js";
 import { Example } from "../models/example.model.js";
 import { SampleCode } from "../models/sampleCode.model.js";
 import { Institute } from "../models/institute.model.js";
+import { Room } from "../models/room.model.js";
 
 const generateInstructorTokens = async (instructorId) => {
   const instructor = await Instructor.findById(instructorId);
@@ -220,86 +221,6 @@ const createQuestion = async (req, res) => {
   }
 };
 
-// get questions solved by the students
-const getSolvedQuestions = async (req, res) => {
-  try {
-    // user in the request
-    const user = req.user;
-
-    // validation on user
-    if (!user) {
-      return res.status(401).json({
-        message: "User not found",
-        success: false,
-      });
-    }
-
-    // question id
-    const { questionId } = req.body;
-
-    // validation on question
-    if (!questionId) {
-      return res.status(400).json({
-        message: "Question ID is missing",
-        success: false,
-      });
-    }
-
-    // find questions solved
-    const solvedQuestions = await Question.findById(questionId);
-    if (!solvedQuestions) {
-      return res.status(404).json({
-        message: "Question not found",
-        success: false,
-      });
-    }
-
-    // questions solved
-    const question = await Question.findById(questionId)
-      .populate("solvedBy", "fullName _id")
-      .exec();
-
-    // validation
-    if (!question) {
-      return res.status(404).json({
-        message: "Question not found",
-        success: false,
-      });
-    }
-
-    console.log("Question solved by students: -> ", question.solvedBy);
-
-    const studentsArray = question.studentsSolvedTheQuestions.map(
-      (student) => ({
-        id: student._id,
-        fullName: student.fullName,
-      })
-    );
-
-    // log the details
-    if (!studentsArray) {
-      return res.status(404).json({
-        message: "Error in studentsArray",
-        success: false,
-      });
-    }
-
-    console.log("Students solved the question: -> ", studentsArray);
-
-    return res.status(200).json({
-      message: "Solved questions by students",
-      success: true,
-      data: studentsArray,
-    });
-  } catch (error) {
-    console.error("Error in getSolvedQuestions:", error);
-    return res.status(500).json({
-      message: "Server error while getting solved questions",
-      success: false,
-    });
-  }
-};
-
 // get all colleges
 const getAllCollegesList = async (req, res) => {
   try {
@@ -385,7 +306,7 @@ const editDetails = async (req, res) => {
       {
         $set: {
           students: [],
-          questions:[],
+          questions: [],
           collegeId: college,
           mobileNumber: mobileNumber,
           subject: subject,
@@ -437,12 +358,20 @@ const getMyStudents = async (req, res) => {
   try {
     const user = req.user;
 
-    const userInDB = await Instructor.findById(user._id)
-      .populate({
-        path: "students", // Assuming 'students' is a reference to a 'Student' model
-        select: "-password -accessToken -refreshToken", // Exclude sensitive fields from the populated students
-      })
-      .select("students");
+    const userInDB = await Instructor.findById(user._id).populate({
+      path: "students",
+      select: "fullName email mobileNumber questionsSolved room",
+      // populate: [
+      //   {
+      //     path: "room",
+      //     model: "Room", // Make sure this matches your Room model name
+      //   },
+      //   {
+      //     path: "questionsSolved",
+      //     model: "Solution", // Make sure this matches your Question model name
+      //   },
+      // ],
+    });
 
     console.log("Students -> ", userInDB);
 
@@ -455,12 +384,12 @@ const getMyStudents = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      data: userInDB,
+      data: userInDB.students,
     });
   } catch (error) {
     console.log("Error in finding enrolled students");
     return res.status(400).json({
-      succes: false,
+      success: false,
       message: error.message,
     });
   }
@@ -501,6 +430,127 @@ const getMyQuestions = async (req, res) => {
   }
 };
 
+// get questions solved by the students
+const getSolvedQuestions = async (req, res) => {
+  try {
+    // user in the request
+    const user = req.user;
+
+    // validation on user
+    if (!user) {
+      return res.status(401).json({
+        message: "User not found",
+        success: false,
+      });
+    }
+
+    // question id
+    const { questionId } = req.body;
+
+    // validation on question
+    if (!questionId) {
+      return res.status(400).json({
+        message: "Question ID is missing",
+        success: false,
+      });
+    }
+
+    // find questions solved
+    const solvedQuestions = await Question.findById(questionId);
+    if (!solvedQuestions) {
+      return res.status(404).json({
+        message: "Question not found",
+        success: false,
+      });
+    }
+
+    // questions solved
+    const question = await Question.findById(questionId)
+      .populate("solvedBy", "fullName _id")
+      .exec();
+
+    // validation
+    if (!question) {
+      return res.status(404).json({
+        message: "Question not found",
+        success: false,
+      });
+    }
+
+    console.log("Question solved by students: -> ", question.solvedBy);
+
+    const studentsArray = question.studentsSolvedTheQuestions.map(
+      (student) => ({
+        id: student._id,
+        fullName: student.fullName,
+      })
+    );
+
+    // log the details
+    if (!studentsArray) {
+      return res.status(404).json({
+        message: "Error in studentsArray",
+        success: false,
+      });
+    }
+
+    console.log("Students solved the question: -> ", studentsArray);
+
+    return res.status(200).json({
+      message: "Solved questions by students",
+      success: true,
+      data: studentsArray,
+    });
+  } catch (error) {
+    console.error("Error in getSolvedQuestions:", error);
+    return res.status(500).json({
+      message: "Server error while getting solved questions",
+      success: false,
+    });
+  }
+};
+
+// get the rooms
+const getRoomsByRoomIds = async (req, res) => {
+  try {
+    const { roomIds } = req.body;
+
+    console.log("Room id -> ",roomIds)
+
+    if (!roomIds || !Array.isArray(roomIds) || roomIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "roomIds array is required in request body",
+      });
+    }
+
+    // Find rooms matching any of the roomIds in the array
+    const rooms = await Room.find({ _id: { $in: roomIds } })
+      .populate("students", "fullName email mobileNumber")
+      .populate("instructor", "fullName email")
+      .populate("college", "name address");
+
+    if (!rooms || rooms.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No rooms found for the given roomIds",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: rooms,
+    });
+  } catch (error) {
+    console.error("Error in getRoomsByRoomIds controller:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching rooms",
+      error: error.message,
+    });
+  }
+};
+
 export {
   registerInstructor,
   loginInstructor,
@@ -511,4 +561,5 @@ export {
   editDetails,
   getMyStudents,
   getMyQuestions,
+  getRoomsByRoomIds,
 };

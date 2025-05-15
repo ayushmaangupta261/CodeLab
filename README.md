@@ -17,6 +17,25 @@
 
 ---
 
+...
+
+## Screenshots
+
+### Collaborative Code Editor
+
+![Code Editor](./screenshots/editor.png)
+
+### Real-time Terminal Session
+
+![Terminal](./screenshots/terminal.png)
+
+### Video Meeting and Whiteboard Features
+
+![Video Meeting](./screenshots/video_meeting.png)
+![Whiteboard](./screenshots/whiteboard.png)
+
+...
+
 ## 🧱 Folder Structure
 
 ```
@@ -56,7 +75,6 @@ Code-Lab/
 └── eslint.config.js
 ```
 
-
 ---
 
 ## 🚀 Getting Started
@@ -68,7 +86,6 @@ git clone https://github.com/ayushmaangupta261/Code-Lab.git
 cd Code-Lab
 ```
 
-
 ---
 
 ### 2. Install Dependencies
@@ -79,41 +96,38 @@ cd Code-Lab
 npm install
 ```
 
-
 #### Backend:
 
-``` bash
+```bash
 cd server
 npm install
 ```
-
 
 ---
 
 ### 3. Create `.env` File in `/server`
 
 ```env for backend
-MONGO_URL = 
+MONGO_URL =
 PORT = 4000
 
 CORS_ORIGIN = *
 
-CLOUDINARY_CLOUD_NAME = 
-CLOUDINARY_API_KEY = 
-CLOUDINARY_API_SECRET = 
+CLOUDINARY_CLOUD_NAME =
+CLOUDINARY_API_KEY =
+CLOUDINARY_API_SECRET =
 
-ACCESS_TOKEN_SECRET = 
+ACCESS_TOKEN_SECRET =
 ACCESS_TOKEN_EXPIRY = 1d
-REFRESH_TOKEN_SECRET = 
+REFRESH_TOKEN_SECRET =
 REFRESH_TOKEN_EXPIRY = 10d
 
-GOOGLE_API_KEY = 
+GOOGLE_API_KEY =
 ```
 
------------------------------------
+---
 
 ### 3. Create `.env` File in `./`
-
 
 ```env for frontent
 
@@ -134,7 +148,6 @@ VITE_APP_SOCKET_URL = http://localhost:4000
 #VITE_APP_SOCKET_URL = https://code-lab-duqw.onrender.com
 ```
 
-
 ---
 
 ### 4. Run Locally
@@ -142,10 +155,10 @@ VITE_APP_SOCKET_URL = http://localhost:4000
 #### In one terminal (backend + frontend) in parent directory:
 
 # The project uses run concurrently
-``` bash
+
+```bash
 npm run dev
 ```
-
 
 ---
 
@@ -157,7 +170,6 @@ npm run dev
 - **Deployment**: Render
 
 ---
-
 
 ## 🙋 Author
 

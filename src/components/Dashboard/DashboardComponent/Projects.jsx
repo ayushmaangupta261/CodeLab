@@ -17,6 +17,7 @@ const Projects = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
+  console.log("user -> ", user);
 
   const [email, setemail] = useState(user?.email || "");
 
@@ -34,7 +35,10 @@ const Projects = () => {
     }
 
     const response = await dispatch(
-      createAndJoinRoom({ roomId, email, projectName }, user?.accessToken)
+      createAndJoinRoom(
+        { roomId, email, projectName, userId: user?._id },
+        user?.accessToken
+      )
     );
 
     if (response?.success) {
@@ -63,7 +67,7 @@ const Projects = () => {
   useEffect(() => {
     const findRooms = async () => {
       try {
-        if(email){
+        if (email) {
           const response = await dispatch(
             findRoomByEmail(email, user?.accessToken)
           );
@@ -75,7 +79,7 @@ const Projects = () => {
       }
     };
 
-    if (email.trim() !== "") { 
+    if (email.trim() !== "") {
       findRooms();
     }
   }, [dispatch, email, user?.accessToken]);
@@ -125,7 +129,7 @@ const Projects = () => {
                     className="bg-green-500 px-3 py-1 rounded-md text-black hover:bg-green-400 hover:scale-95 duration-200"
                     onClick={() =>
                       navigate(`/editor/${r.roomId}`, {
-                        state: { email, projectName:  r.projectName },
+                        state: { email, projectName: r.projectName, userType:"Student" },
                       })
                     }
                   >

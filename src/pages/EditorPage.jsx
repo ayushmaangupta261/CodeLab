@@ -29,9 +29,9 @@ const EditorPage = () => {
   const { roomId } = useParams();
   const [clients, setClients] = useState([]);
   const { user } = useSelector((state) => state.auth);
-  const { email, projectName } = location.state || {};
+  const { email, projectName, accountType, studentName } = location.state || {};
 
-  console.log("Project name -> ",projectName)
+  console.log("Project name -> ", projectName);
 
   /** ───────────────────────────────────────────────
    *  Initialize Socket Connection
@@ -132,7 +132,9 @@ const EditorPage = () => {
    *  Leave Room and Navigate Back
    *  ─────────────────────────────────────────────── */
   const leaveRoom = () => {
-    ReactNavigate("/dashboard/Projects");
+    if (user?.accountType === "Student") {
+      ReactNavigate("/dashboard/Projects");
+    }
   };
 
   if (!location.state) {
@@ -145,12 +147,8 @@ const EditorPage = () => {
   const handleMenuToggle = (menu) => {
     console.log("handleMenuToggle  " + menu);
     setShowMenu(menu);
-    
   };
 
-  
-
- 
   console.log(`Selected file -> ${selectedFile}`);
 
   return (
@@ -217,7 +215,11 @@ const EditorPage = () => {
             <div className="flex gap-x-2 flex-wrap mx-auto bg-gray-800 px-2 rounded-md">
               {/* files */}
               {showMenu === "files" && (
-                <FileTree onSelect={(path) => setSelectedFile(path)} roomId={roomId} projectName={projectName}/>
+                <FileTree
+                  onSelect={(path) => setSelectedFile(path)}
+                  roomId={roomId}
+                  projectName={projectName}
+                />
               )}
             </div>
             {/* clients */}
@@ -245,10 +247,14 @@ const EditorPage = () => {
             Copy Room Id
           </button>
           <button
-            className="btn leaveBtn px-2 py-1 bg-green-500 text-black  ml-auto rounded-lg mt-2 mb-2 cursor-pointer hover:bg-green-400 hover:scale-105 duration-200 w-full"
-            onClick={leaveRoom}
+            className="btn leaveBtn px-2 py-1 bg-green-500 text-black ml-auto rounded-lg mt-2 mb-2 cursor-pointer hover:bg-green-400 hover:scale-105 duration-200 w-full"
+            onClick={
+              user?.accountType === "Student"
+                ? leaveRoom
+                : () => window.history.back()
+            }
           >
-            Leave the Room
+           Leave Room
           </button>
         </div>
       </div>
