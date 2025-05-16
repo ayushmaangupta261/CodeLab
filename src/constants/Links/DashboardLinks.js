@@ -45,8 +45,15 @@ export const DashboardLinks = [
   // },
   {
     id: 6,
-    name: "Students",
-    path: "/dashboard/students",
+    name: "Projects",
+    path: "/dashboard/instructor-projects",
+    type: ACCOUNT_TYPE.INSTRUCTOR,
+    // icon:"VscAdd"
+  },
+  {
+    id: 7,
+    name: "Questions",
+    path: "/dashboard/my-questions",
     type: ACCOUNT_TYPE.INSTRUCTOR,
     // icon:"VscAdd"
   },

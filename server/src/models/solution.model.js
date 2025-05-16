@@ -27,7 +27,7 @@ const solutionSchema = Schema({
   },
   solvedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Student",
   },
 });
 

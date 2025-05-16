@@ -15,7 +15,9 @@ const {
   EDIT_DETAILS_API,
   GET_MY_STUDENTS_API,
   GET_MY_QUESTIONS_API,
-  GET_STUDENT_QUESTIONS_API,
+  GET_ROOMS_API,
+  GET_SOLVED_QUESTION_DATA,
+  GET_SOLUTION_BY_STUDENT_ID,
 } = instructorEndpoints;
 
 export const getAllCollegeList = (token) => async (dispatch) => {
@@ -234,7 +236,7 @@ export const getMyQuestions = (token) => async (dispatch) => {
       }
     );
 
-    console.log("Response in api -> ", response);
+    console.log("Response my questions in api -> ", response);
 
     if (!response) {
       toast.dismiss(toastId);
@@ -243,7 +245,7 @@ export const getMyQuestions = (token) => async (dispatch) => {
 
     toast.dismiss(toastId);
     toast.success("Your questions found successfully");
-    return response.data.data;
+    return response?.data?.questions;
   } catch (error) {
     console.log("Error in get my questions api -> ", error);
     toast.dismiss(toastId);
@@ -260,7 +262,7 @@ export const getStudentRooms = (token, roomIds) => async (dispatch) => {
   try {
     const response = await apiConnector(
       "POST",
-      GET_STUDENT_QUESTIONS_API,
+      GET_ROOMS_API,
       { roomIds }, // pass roomIds array in body
       {
         Authorization: `Bearer ${token}`,
@@ -285,3 +287,71 @@ export const getStudentRooms = (token, roomIds) => async (dispatch) => {
     return false;
   }
 };
+
+export const getSolvedQuestionsData =
+  (token, questionId) => async (dispatch) => {
+    const toastId = toast.loading("Fetching solved questions...");
+
+    try {
+      const response = await apiConnector(
+        "POST",
+        GET_SOLVED_QUESTION_DATA,
+        { questionId },
+        {
+          Authorization: `Bearer ${token}`,
+        }
+      );
+
+      console.log("Response in getSolvedQuestions api-> ", response);
+
+      if (!response || !response.data.success) {
+        toast.dismiss(toastId);
+        toast.error("Failed to fetch solved questions.");
+        return false;
+      }
+
+      toast.dismiss(toastId);
+      toast.success("Data loaded successfully!");
+      return response.data; // array of solved questions
+    } catch (error) {
+      console.log("Error in getSolvedQuestions -> ", error);
+      toast.dismiss(toastId);
+      toast.error("Something went wrong while fetching solved questions.");
+      return false;
+    }
+  };
+
+export const getSolutionsByStudentId =
+  (token, studentId, questionId) => async (dispatch) => {
+    const toastId = toast.loading("Fetching student solutions...");
+
+    console.log("Token -> ", token);
+
+    try {
+      const response = await apiConnector(
+        "POST",
+        GET_SOLUTION_BY_STUDENT_ID,
+        { studentId, questionId },
+        {
+          Authorization: `Bearer ${token}`,
+        }
+      );
+
+      console.log("📥 Response in getSolutionsByStudentId ->", response);
+
+      if (!response || !response.data.success) {
+        toast.dismiss(toastId);
+        toast.error("Failed to fetch solutions.");
+        return false;
+      }
+
+      toast.dismiss(toastId);
+      toast.success("Solutions fetched successfully!");
+      return response.data.data; // array of solutions
+    } catch (error) {
+      console.error("❌ Error in getSolutionsByStudentId:", error);
+      toast.dismiss(toastId);
+      toast.error("Something went wrong while fetching solutions.");
+      return false;
+    }
+  };

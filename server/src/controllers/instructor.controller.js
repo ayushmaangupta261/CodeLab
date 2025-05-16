@@ -4,6 +4,7 @@ import { Example } from "../models/example.model.js";
 import { SampleCode } from "../models/sampleCode.model.js";
 import { Institute } from "../models/institute.model.js";
 import { Room } from "../models/room.model.js";
+import { Solution } from "../models/solution.model.js";
 
 const generateInstructorTokens = async (instructorId) => {
   const instructor = await Instructor.findById(instructorId);
@@ -399,42 +400,78 @@ const getMyQuestions = async (req, res) => {
   try {
     const user = req.user;
 
-    const userInDB = await Instructor.findById(user._id)
-      .populate({
-        path: "questions",
-        populate: {
-          path: "solvedBy",
-          model: "Student",
-          select: "fullName", // select only the fullName of the student
-        },
-      })
-      .select("questions"); // only return the 'questions' field from Instructor
+    // Check if user exists (optional if JWT auth already does this)
+    if (!user || !user._id) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
 
-    if (!userInDB) {
-      return res.status(400).json({
+    // Find questions where the current instructor is the creator
+    // const questions = await Instructor.find(user._id);
+    // // .populate({
+    // //   path: "solvedBy",
+    // //   model: "Student",
+    // //   select: "fullName email", // Only get fullName and email of students
+    // // });
+
+    // const instructor = await Instructor.findById(user._id).populate({
+    //   path: "questions",
+    //   model: "Question",
+    //   select: "title description studentsSolvedTheQuestions", // customize as needed
+    //   populate: {
+    //     path: "studentsSolvedTheQuestions",
+    //     model: "User", // or "Student" depending on your schema
+    //     select: "fullName email", // student details
+    //   },
+    // });
+
+    // return res.status(200).json({
+    //   success: true,
+    //   instructor, // Send back the populated questions
+    // });
+
+    const instructor = await Instructor.findById(user._id).populate({
+      path: "questions",
+      model: "Question",
+      select: "title description solvedBy", // get question info
+      populate: {
+        path: "solvedBy",
+        model: "Student", // or "User" depending on your schema
+        select: "fullName email", // get student info
+      },
+    });
+
+    if (!instructor) {
+      return res.status(404).json({
         success: false,
         message: "Instructor not found",
       });
     }
+    console.log("questions -> ", instructor.questions);
 
+    // Return only the populated questions array
     return res.status(200).json({
       success: true,
-      data: userInDB.questions, // Only send the questions array
+      questions: instructor.questions,
     });
   } catch (error) {
-    console.error("Error in finding instructor questions", error);
+    console.error("Error in getMyQuestions:", error);
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Failed to retrieve questions",
     });
   }
 };
 
 // get questions solved by the students
-const getSolvedQuestions = async (req, res) => {
+const getSolvedQuestionData = async (req, res) => {
   try {
     // user in the request
     const user = req.user;
+
+    console.log("questions data");
 
     // validation on user
     if (!user) {
@@ -466,7 +503,7 @@ const getSolvedQuestions = async (req, res) => {
 
     // questions solved
     const question = await Question.findById(questionId)
-      .populate("solvedBy", "fullName _id")
+      .populate("solvedBy", "fullName _id email mobileNumber")
       .exec();
 
     // validation
@@ -477,29 +514,29 @@ const getSolvedQuestions = async (req, res) => {
       });
     }
 
-    console.log("Question solved by students: -> ", question.solvedBy);
+    console.log("Question solved by students: -> ", question);
 
-    const studentsArray = question.studentsSolvedTheQuestions.map(
-      (student) => ({
-        id: student._id,
-        fullName: student.fullName,
-      })
-    );
+    // const studentsArray = question.solvedBy.map(
+    //   (student) => ({
+    //     id: student._id,
+    //     fullName: student.fullName,
+    //   })
+    // );
 
-    // log the details
-    if (!studentsArray) {
-      return res.status(404).json({
-        message: "Error in studentsArray",
-        success: false,
-      });
-    }
+    // // log the details
+    // if (!studentsArray) {
+    //   return res.status(404).json({
+    //     message: "Error in studentsArray",
+    //     success: false,
+    //   });
+    // }
 
-    console.log("Students solved the question: -> ", studentsArray);
+    // console.log("Students solved the question: -> ", studentsArray);
 
     return res.status(200).json({
       message: "Solved questions by students",
       success: true,
-      data: studentsArray,
+      data: question,
     });
   } catch (error) {
     console.error("Error in getSolvedQuestions:", error);
@@ -515,7 +552,7 @@ const getRoomsByRoomIds = async (req, res) => {
   try {
     const { roomIds } = req.body;
 
-    console.log("Room id -> ",roomIds)
+    console.log("Room id -> ", roomIds);
 
     if (!roomIds || !Array.isArray(roomIds) || roomIds.length === 0) {
       return res.status(400).json({
@@ -551,15 +588,62 @@ const getRoomsByRoomIds = async (req, res) => {
   }
 };
 
+// controllers/solutionController.js
+const getSolutionsByStudentId = async (req, res) => {
+  try {
+    const { studentId, questionId } = req.body;
+
+    console.log("Student ID ->", studentId);
+    console.log("Question ID ->", questionId);
+
+    if (!studentId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Student ID is required" });
+    }
+
+    // Build query object
+    const query = { solvedBy: studentId };
+    if (questionId) {
+      query.questionId = questionId;
+    }
+
+    const solutions = await Solution.find(query)
+      .populate("questionId", "title description")
+      .populate("solvedBy", "fullName email");
+
+    if (!solutions || solutions.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No solutions found for this student",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Solutions fetched successfully",
+      data: solutions,
+    });
+  } catch (error) {
+    console.error("Error fetching student solutions:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
 export {
   registerInstructor,
   loginInstructor,
   logoutInstructor,
   createQuestion,
-  getSolvedQuestions,
   getAllCollegesList,
   editDetails,
   getMyStudents,
   getMyQuestions,
   getRoomsByRoomIds,
+  getSolvedQuestionData,
+  getSolutionsByStudentId,
 };

@@ -5,6 +5,7 @@ import MyQuestions from "./InstructorOverviewComponent/MyQuestions";
 
 const InstructorOverview = () => {
   const { user } = useSelector((state) => state.auth);
+  console.log("USer -> ",user)
   const [showStudentsEnrolled, setShowStudentsEnrolled] = useState(false);
   const [showMyQuestions, setShowMyQuestions] = useState(false);
 
@@ -68,7 +69,7 @@ const InstructorOverview = () => {
             <p>Students Enrolled: {user.students?.length || 0}</p>
             <button
               onClick={toggleStudentsEnrolled}
-              className="mr-5 bg-amber-300 items-center text-black px-2 py-1 rounded-md hover:scale-95 transition-all duration-200 cursor-pointer"
+              className="mr-5 bg-green-600 items-center  px-2 py-1 rounded-md hover:scale-95 transition-all duration-200 cursor-pointer"
             >
               View
             </button>
@@ -79,7 +80,7 @@ const InstructorOverview = () => {
             <p>Questions Created: {user.questions?.length || 0}</p>
             <button
               onClick={toggleMyQuestions}
-              className="mr-5 bg-amber-300 text-black px-2 py-1 rounded-md hover:scale-95 transition-all duration-200 cursor-pointer"
+              className="mr-5 bg-green-600  px-2 py-1 rounded-md hover:scale-95 transition-all duration-200 cursor-pointer"
             >
               View
             </button>

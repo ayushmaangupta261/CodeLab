@@ -1,183 +1,183 @@
-// import React, { useEffect, useRef, useCallback } from "react";
-// import Codemirror from "codemirror";
-// import { getFiles } from "../../services/operations/codeEditorApi.js";
-// import "./Editor.css";
+import React, { useEffect, useRef, useCallback } from "react";
+import Codemirror from "codemirror";
+import { getFiles } from "../../services/operations/codeEditorApi.js";
+import "./Editor.css";
 
-// // Styles & themes
-// import "codemirror/lib/codemirror.css";
-// import "codemirror/theme/dracula.css";
+// Styles & themes
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/dracula.css";
 
-// // Language modes
-// import "codemirror/mode/javascript/javascript";
-// import "codemirror/mode/xml/xml";
-// import "codemirror/mode/css/css";
-// import "codemirror/mode/python/python";
-// import "codemirror/mode/clike/clike";
-// import "codemirror/mode/sql/sql";
+// Language modes
+import "codemirror/mode/javascript/javascript";
+import "codemirror/mode/xml/xml";
+import "codemirror/mode/css/css";
+import "codemirror/mode/python/python";
+import "codemirror/mode/clike/clike";
+import "codemirror/mode/sql/sql";
 
-// // Autocomplete addons
-// import "codemirror/addon/hint/show-hint";
-// import "codemirror/addon/hint/javascript-hint";
-// import "codemirror/addon/hint/html-hint";
-// import "codemirror/addon/hint/css-hint";
-// import "codemirror/addon/hint/sql-hint";
-// import "codemirror/addon/hint/anyword-hint";
-// import "codemirror/addon/hint/show-hint.css";
+// Autocomplete addons
+import "codemirror/addon/hint/show-hint";
+import "codemirror/addon/hint/javascript-hint";
+import "codemirror/addon/hint/html-hint";
+import "codemirror/addon/hint/css-hint";
+import "codemirror/addon/hint/sql-hint";
+import "codemirror/addon/hint/anyword-hint";
+import "codemirror/addon/hint/show-hint.css";
 
-// // Auto close and match
-// import "codemirror/addon/edit/closetag";
-// import "codemirror/addon/edit/closebrackets";
-// import "codemirror/addon/edit/matchbrackets";
-// import "codemirror/addon/selection/active-line";
+// Auto close and match
+import "codemirror/addon/edit/closetag";
+import "codemirror/addon/edit/closebrackets";
+import "codemirror/addon/edit/matchbrackets";
+import "codemirror/addon/selection/active-line";
 
-// import ACTIONS from "../../constants/Actions.js";
+import ACTIONS from "../../constants/Actions.js";
 
-// const Editor = ({ socketRef, roomId, onCodeChange, language = "javascript", selectedFile }) => {
-//   const editorRef = useRef(null);
-//   const textareaRef = useRef(null);
-//   const codeRef = useRef("");
-//   const selectedFileContentRef = useRef("");
-//   const timeoutRef = useRef(null);
+const Editor = ({ socketRef, roomId, onCodeChange, language = "javascript", selectedFile }) => {
+  const editorRef = useRef(null);
+  const textareaRef = useRef(null);
+  const codeRef = useRef("");
+  const selectedFileContentRef = useRef("");
+  const timeoutRef = useRef(null);
   
 
-//   const modeMap = {
-//     javascript: "javascript",
-//     python: "python",
-//     java: "text/x-java",
-//     cpp: "text/x-c++src",
-//     sql: "sql",
-//     html: "xml",
-//   };
+  const modeMap = {
+    javascript: "javascript",
+    python: "python",
+    java: "text/x-java",
+    cpp: "text/x-c++src",
+    sql: "sql",
+    html: "xml",
+  };
 
-//   // Initialize CodeMirror
-//   useEffect(() => {
-//     if (!textareaRef.current) return;
+  // Initialize CodeMirror
+  useEffect(() => {
+    if (!textareaRef.current) return;
 
-//     editorRef.current = Codemirror.fromTextArea(textareaRef.current, {
-//       mode: modeMap[language] || "javascript",
-//       theme: "dracula",
-//       autoCloseTags: true,
-//       autoCloseBrackets: true,
-//       lineNumbers: true,
-//       matchBrackets: true,
-//       styleActiveLine: true,
-//       extraKeys: { "Ctrl-Space": "autocomplete" },
-//       hintOptions: { completeSingle: false },
-//     });
+    editorRef.current = Codemirror.fromTextArea(textareaRef.current, {
+      mode: modeMap[language] || "javascript",
+      theme: "dracula",
+      autoCloseTags: true,
+      autoCloseBrackets: true,
+      lineNumbers: true,
+      matchBrackets: true,
+      styleActiveLine: true,
+      extraKeys: { "Ctrl-Space": "autocomplete" },
+      hintOptions: { completeSingle: false },
+    });
 
-//     editorRef.current.setSize("100%", "370px");
+    editorRef.current.setSize("100%", "370px");
 
-//     return () => {
-//       editorRef.current?.toTextArea();
-//     };
-//   }, []);
+    return () => {
+      editorRef.current?.toTextArea();
+    };
+  }, []);
 
-//   // Join the room (with acknowledgment)
-//   useEffect(() => {
-//     const socket = socketRef.current;
-//     if (socket?.connected) {
-//       socket.emit(ACTIONS.JOIN, { roomId }, () => {
-//         console.log("✅ Joined room:", roomId);
-//       });
-//     }
+  // Join the room (with acknowledgment)
+  useEffect(() => {
+    const socket = socketRef.current;
+    if (socket?.connected) {
+      socket.emit(ACTIONS.JOIN, { roomId }, () => {
+        console.log("✅ Joined room:", roomId);
+      });
+    }
 
-//     socket?.on("connect", () => {
-//       console.log("🔌 Socket connected:", socket.id);
-//       socket.emit(ACTIONS.JOIN, { roomId }, () => {
-//         console.log("✅ Rejoined room after reconnect:", roomId);
-//       });
-//     });
+    socket?.on("connect", () => {
+      console.log("🔌 Socket connected:", socket.id);
+      socket.emit(ACTIONS.JOIN, { roomId }, () => {
+        console.log("✅ Rejoined room after reconnect:", roomId);
+      });
+    });
 
-//     return () => {
-//       socket?.off("connect");
-//     };
-//   }, [socketRef, roomId]);
+    return () => {
+      socket?.off("connect");
+    };
+  }, [socketRef, roomId]);
 
-//   // Handle code changes from user
-//   const handleCodeChange = useCallback((instance) => {
-//     const newCode = instance.getValue();
-//     if (newCode === codeRef.current) return;
+  // Handle code changes from user
+  const handleCodeChange = useCallback((instance) => {
+    const newCode = instance.getValue();
+    if (newCode === codeRef.current) return;
 
-//     codeRef.current = newCode;
-//     onCodeChange(newCode);
+    codeRef.current = newCode;
+    onCodeChange(newCode);
 
-//     if (socketRef.current?.connected) {
-//       socketRef.current.emit(ACTIONS.CODE_CHANGE, { roomId, code: newCode });
-//     }
+    if (socketRef.current?.connected) {
+      socketRef.current.emit(ACTIONS.CODE_CHANGE, { roomId, code: newCode });
+    }
 
-//     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-//     timeoutRef.current = setTimeout(() => {
-//       if (newCode !== selectedFileContentRef.current) {
-//         socketRef.current?.emit(ACTIONS.FILE_CHANGE, {
-//           path: selectedFile,
-//           content: newCode,
-//         });
-//       }
-//     }, 3000);
-//   }, [roomId, selectedFile, onCodeChange]);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      if (newCode !== selectedFileContentRef.current) {
+        socketRef.current?.emit(ACTIONS.FILE_CHANGE, {
+          path: selectedFile,
+          content: newCode,
+        });
+      }
+    }, 3000);
+  }, [roomId, selectedFile, onCodeChange]);
 
-//   // Register CodeMirror change handler
-//   useEffect(() => {
-//     const editor = editorRef.current;
-//     if (editor) {
-//       editor.on("change", handleCodeChange);
-//     }
+  // Register CodeMirror change handler
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (editor) {
+      editor.on("change", handleCodeChange);
+    }
 
-//     return () => {
-//       editor?.off("change", handleCodeChange);
-//     };
-//   }, [handleCodeChange]);
+    return () => {
+      editor?.off("change", handleCodeChange);
+    };
+  }, [handleCodeChange]);
 
-//   // Handle incoming code from socket
-//   useEffect(() => {
-//     const socket = socketRef.current;
-//     const editor = editorRef.current;
+  // Handle incoming code from socket
+  useEffect(() => {
+    const socket = socketRef.current;
+    const editor = editorRef.current;
 
-//     if (!socket || !editor) return;
+    if (!socket || !editor) return;
 
-//     const handleIncomingCodeChange = ({ code }) => {
-//       if (code !== codeRef.current) {
-//         editor.setValue(code);
-//         codeRef.current = code;
-//       }
-//     };
+    const handleIncomingCodeChange = ({ code }) => {
+      if (code !== codeRef.current) {
+        editor.setValue(code);
+        codeRef.current = code;
+      }
+    };
 
-//     socket.on(ACTIONS.CODE_CHANGE, handleIncomingCodeChange);
+    socket.on(ACTIONS.CODE_CHANGE, handleIncomingCodeChange);
 
-//     return () => {
-//       socket.off(ACTIONS.CODE_CHANGE, handleIncomingCodeChange);
-//     };
-//   }, [socketRef]);
+    return () => {
+      socket.off(ACTIONS.CODE_CHANGE, handleIncomingCodeChange);
+    };
+  }, [socketRef]);
 
-//   // Load selected file content
-//   const loadFileContent = useCallback(async () => {
-//     if (!selectedFile) return;
+  // Load selected file content
+  const loadFileContent = useCallback(async () => {
+    if (!selectedFile) return;
 
-//     try {
-//       const fileContent = await getFiles(selectedFile);
-//       if (fileContent) {
-//         selectedFileContentRef.current = fileContent;
-//         codeRef.current = fileContent;
-//         editorRef.current?.setValue(fileContent);
-//       }
-//     } catch (error) {
-//       console.error("❌ Error fetching file:", error);
-//     }
-//   }, [selectedFile]);
+    try {
+      const fileContent = await getFiles(selectedFile);
+      if (fileContent) {
+        selectedFileContentRef.current = fileContent;
+        codeRef.current = fileContent;
+        editorRef.current?.setValue(fileContent);
+      }
+    } catch (error) {
+      console.error("❌ Error fetching file:", error);
+    }
+  }, [selectedFile]);
 
-//   useEffect(() => {
-//     loadFileContent();
-//   }, [loadFileContent]);
+  useEffect(() => {
+    loadFileContent();
+  }, [loadFileContent]);
 
-//   return (
-//     <div className="h-[370px] border border-gray-700 rounded-md overflow-hidden">
-//       <textarea ref={textareaRef} className="hidden" />
-//       <div className="w-full h-full" id="editor-container"></div>
-//     </div>
-//   );
-// };
+  return (
+    <div className="h-[370px] border border-gray-700 rounded-md overflow-hidden">
+      <textarea ref={textareaRef} className="hidden" />
+      <div className="w-full h-full" id="editor-container"></div>
+    </div>
+  );
+};
 
-// export default Editor;
+export default Editor;
 
 
 
@@ -315,148 +315,323 @@
 
 
 
-import React, { useEffect, useRef, useCallback, useState } from "react";
-import MonacoEditor from "@monaco-editor/react";
-import * as monaco from "monaco-editor";
+// import React, { useEffect, useRef, useCallback, useState } from "react";
+// import MonacoEditor from "@monaco-editor/react";
+// import * as monaco from "monaco-editor";
 
-const Editor = ({ socketRef, roomId, onCodeChange, language = "html", selectedFile }) => {
-  const editorRef = useRef(null);
-  const codeRef = useRef("");
-  const selectedFileContentRef = useRef("");
-  const timeoutRef = useRef(null);
-  const [code, setCode] = useState("");
+// const Editor = ({ socketRef, roomId, onCodeChange,  selectedFile }) => {
+//   const editorRef = useRef(null);
+//   const codeRef = useRef("");
+//   const selectedFileContentRef = useRef("");
+//   const timeoutRef = useRef(null);
+//   const [code, setCode] = useState("");
 
-  const languageMap = {
-    javascript: "javascript",
-    python: "python",
-    java: "java",
-    cpp: "cpp",
-    sql: "sql",
-    html: "html",
-  };
+//   const languageMap = {
+//     javascript: "javascript",
+//     python: "python",
+//     java: "java",
+//     cpp: "cpp",
+//     sql: "sql",
+//     html: "html",
+//   };
 
-  const loadFileContent = useCallback(async () => {
-    if (!selectedFile) return;
-    try {
-      const fileContent = await getFiles(selectedFile);
-      if (fileContent) {
-        selectedFileContentRef.current = fileContent;
-        codeRef.current = fileContent;
-        setCode(fileContent);
-      }
-    } catch (error) {
-      console.error("❌ Error fetching file:", error);
-    }
-  }, [selectedFile]);
+//   const loadFileContent = useCallback(async () => {
+//     if (!selectedFile) return;
+//     try {
+//       const fileContent = await getFiles(selectedFile);
+//       if (fileContent) {
+//         selectedFileContentRef.current = fileContent;
+//         codeRef.current = fileContent;
+//         setCode(fileContent);
+//       }
+//     } catch (error) {
+//       console.error("❌ Error fetching file:", error);
+//     }
+//   }, [selectedFile]);
 
-  useEffect(() => {
-    loadFileContent();
-  }, [loadFileContent]);
+//   useEffect(() => {
+//     loadFileContent();
+//   }, [loadFileContent]);
 
-  const handleCodeChange = useCallback(
-    (newCode) => {
-      if (newCode === codeRef.current) return;
+//   const handleCodeChange = useCallback(
+//     (newCode) => {
+//       if (newCode === codeRef.current) return;
 
-      codeRef.current = newCode;
-      onCodeChange(newCode);
+//       codeRef.current = newCode;
+//       onCodeChange(newCode);
 
-      if (socketRef.current?.connected) {
-        socketRef.current.emit("CODE_CHANGE", { roomId, code: newCode });
-      }
+//       if (socketRef.current?.connected) {
+//         socketRef.current.emit("CODE_CHANGE", { roomId, code: newCode });
+//       }
 
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => {
-        if (newCode !== selectedFileContentRef.current) {
-          socketRef.current?.emit("FILE_CHANGE", {
-            path: selectedFile,
-            content: newCode,
-          });
-        }
-      }, 3000);
-    },
-    [roomId, selectedFile, onCodeChange]
-  );
+//       if (timeoutRef.current) clearTimeout(timeoutRef.current);
+//       timeoutRef.current = setTimeout(() => {
+//         if (newCode !== selectedFileContentRef.current) {
+//           socketRef.current?.emit("FILE_CHANGE", {
+//             path: selectedFile,
+//             content: newCode,
+//           });
+//         }
+//       }, 3000);
+//     },
+//     [roomId, selectedFile, onCodeChange]
+//   );
 
-  useEffect(() => {
-    const socket = socketRef.current;
-    if (!socket) return;
+//   useEffect(() => {
+//     const socket = socketRef.current;
+//     if (!socket) return;
 
-    const handleIncomingCodeChange = ({ code }) => {
-      if (code !== codeRef.current) {
-        setCode(code);
-        codeRef.current = code;
-      }
-    };
+//     const handleIncomingCodeChange = ({ code }) => {
+//       if (code !== codeRef.current) {
+//         setCode(code);
+//         codeRef.current = code;
+//       }
+//     };
 
-    socket.on("CODE_CHANGE", handleIncomingCodeChange);
+//     socket.on("CODE_CHANGE", handleIncomingCodeChange);
 
-    return () => {
-      socket.off("CODE_CHANGE", handleIncomingCodeChange);
-    };
-  }, [socketRef]);
+//     return () => {
+//       socket.off("CODE_CHANGE", handleIncomingCodeChange);
+//     };
+//   }, [socketRef]);
 
-  useEffect(() => {
-    const socket = socketRef.current;
-    if (socket?.connected) {
-      socket.emit("JOIN", { roomId }, () => {
-        console.log("✅ Joined room:", roomId);
-      });
-    }
+//   useEffect(() => {
+//     const socket = socketRef.current;
+//     if (socket?.connected) {
+//       socket.emit("JOIN", { roomId }, () => {
+//         console.log("✅ Joined room:", roomId);
+//       });
+//     }
 
-    socket?.on("connect", () => {
-      console.log("🔌 Socket connected:", socket.id);
-      socket.emit("JOIN", { roomId }, () => {
-        console.log("✅ Rejoined room:", roomId);
-      });
-    });
+//     socket?.on("connect", () => {
+//       console.log("🔌 Socket connected:", socket.id);
+//       socket.emit("JOIN", { roomId }, () => {
+//         console.log("✅ Rejoined room:", roomId);
+//       });
+//     });
 
-    return () => {
-      socket?.off("connect");
-    };
-  }, [socketRef, roomId]);
+//     return () => {
+//       socket?.off("connect");
+//     };
+//   }, [socketRef, roomId]);
 
-  // Monaco onMount to trigger Emmet expansion manually
-  useEffect(() => {
-    if (editorRef.current) {
-      const editor = editorRef.current;
-      editor.addCommand(monaco.KeyCode.Enter, function () {
-        // Trigger Emmet expansion for HTML (works like Emmet)
-        const selection = editor.getSelection();
-        const model = editor.getModel();
-        const currentText = model.getValueInRange(selection);
+//   // Monaco onMount to trigger Emmet expansion manually
+//   useEffect(() => {
+//     if (editorRef.current) {
+//       const editor = editorRef.current;
+//       editor.addCommand(monaco.KeyCode.Enter, function () {
+//         // Trigger Emmet expansion for HTML (works like Emmet)
+//         const selection = editor.getSelection();
+//         const model = editor.getModel();
+//         const currentText = model.getValueInRange(selection);
 
-        if (currentText && currentText.match(/^([a-z0-9]+)(\s+)?$/)) {
-          const expandedText = `<${currentText}>`; // Emmet expansion
-          editor.executeEdits('source', [{
-            range: selection,
-            text: expandedText
-          }]);
-        }
-      });
-    }
-  }, []);
+//         if (currentText && currentText.match(/^([a-z0-9]+)(\s+)?$/)) {
+//           const expandedText = `<${currentText}>`; // Emmet expansion
+//           editor.executeEdits('source', [{
+//             range: selection,
+//             text: expandedText
+//           }]);
+//         }
+//       });
+//     }
+//   }, []);
 
-  return (
-    <div className="h-[370px] border border-gray-700 rounded-md overflow-hidden">
-      <MonacoEditor
-        height="370px"
-        language={languageMap[language] || "html"}
-        theme="vs-dark"
-        value={code}
-        onChange={handleCodeChange}
-        options={{
-          fontSize: 14,
-          automaticLayout: true,
-          autoClosingBrackets: "always",
-          autoIndent: "full",
-          minimap: { enabled: false },
-        }}
-        onMount={(editor) => {
-          editorRef.current = editor;
-        }}
-      />
-    </div>
-  );
-};
+//   return (
+//     <div className="h-[370px] border border-gray-700 rounded-md overflow-hidden">
+//       <MonacoEditor
+//         height="370px"
+//         language={languageMap[language] || "html"}
+//         theme="vs-dark"
+//         value={code}
+//         onChange={handleCodeChange}
+//         options={{
+//           fontSize: 14,
+//           automaticLayout: true,
+//           autoClosingBrackets: "always",
+//           autoIndent: "full",
+//           minimap: { enabled: false },
+//         }}
+//         onMount={(editor) => {
+//           editorRef.current = editor;
+//         }}
+//       />
+//     </div>
+//   );
+// };
 
-export default Editor;
+// export default Editor;
+
+
+
+
+
+// import React, { useEffect, useRef, useCallback, useState } from "react";
+// import MonacoEditor from "@monaco-editor/react";
+// import * as monaco from "monaco-editor";
+
+// // Map of file extensions to Monaco-supported languages
+// const extensionToLanguageMap = {
+//   js: "javascript",
+//   jsx: "javascript",
+//   ts: "typescript",
+//   tsx: "typescript",
+//   py: "python",
+//   java: "java",
+//   cpp: "cpp",
+//   c: "c",
+//   cs: "csharp",
+//   go: "go",
+//   rb: "ruby",
+//   php: "php",
+//   html: "html",
+//   css: "css",
+//   scss: "scss",
+//   json: "json",
+//   xml: "xml",
+//   yml: "yaml",
+//   yaml: "yaml",
+//   sh: "shell",
+//   sql: "sql",
+//   swift: "swift",
+//   rs: "rust",
+//   kt: "kotlin",
+//   dart: "dart",
+//   md: "markdown",
+//   txt: "plaintext",
+//   txtx: "plaintext",
+//   // fallback
+//   default: "plaintext",
+// };
+
+// // Extract extension and get language
+// const getLanguageFromFilename = (filename) => {
+//   console.log("File name -> ",filename)
+//   if (!filename) return extensionToLanguageMap.default;
+//   const ext = filename.split(".").pop().toLowerCase();
+//   console.log("File name -> ",ext)
+//   return extensionToLanguageMap[ext] || extensionToLanguageMap.default;
+// };
+
+// // Mocked file content function
+// const getFiles = async (selectedFile) => {
+//   return "// Start coding here";
+// };
+
+// const Editor = ({ socketRef, roomId, onCodeChange, selectedFile }) => {
+//   const editorRef = useRef(null);
+//   const codeRef = useRef("");
+//   const selectedFileContentRef = useRef("");
+//   const timeoutRef = useRef(null);
+//   const [code, setCode] = useState("");
+
+//   const language = getLanguageFromFilename(selectedFile);
+
+//   const loadFileContent = useCallback(async () => {
+//     if (!selectedFile) return;
+//     try {
+//       const fileContent = await getFiles(selectedFile);
+//       selectedFileContentRef.current = fileContent;
+//       codeRef.current = fileContent;
+//       setCode(fileContent);
+//     } catch (err) {
+//       console.error("Failed to load file:", err);
+//     }
+//   }, [selectedFile]);
+
+//   useEffect(() => {
+//     loadFileContent();
+//   }, [loadFileContent]);
+
+//   const handleCodeChange = useCallback(
+//     (newCode) => {
+//       if (newCode === codeRef.current) return;
+//       codeRef.current = newCode;
+//       setCode(newCode);
+//       onCodeChange(newCode);
+
+//       socketRef.current?.emit("CODE_CHANGE", { roomId, code: newCode });
+
+//       if (timeoutRef.current) clearTimeout(timeoutRef.current);
+//       timeoutRef.current = setTimeout(() => {
+//         if (newCode !== selectedFileContentRef.current) {
+//           socketRef.current?.emit("FILE_CHANGE", {
+//             path: selectedFile,
+//             content: newCode,
+//           });
+//         }
+//       }, 3000);
+//     },
+//     [roomId, selectedFile, onCodeChange, socketRef]
+//   );
+
+//   useEffect(() => {
+//     const socket = socketRef.current;
+//     if (!socket) return;
+
+//     const handleIncoming = ({ code }) => {
+//       if (code !== codeRef.current) {
+//         codeRef.current = code;
+//         setCode(code);
+//       }
+//     };
+
+//     socket.on("CODE_CHANGE", handleIncoming);
+//     return () => socket.off("CODE_CHANGE", handleIncoming);
+//   }, [socketRef]);
+
+//   useEffect(() => {
+//     const socket = socketRef.current;
+//     if (!socket) return;
+
+//     const joinRoom = () => {
+//       socket.emit("JOIN", { roomId });
+//       console.log("✅ Joined room:", roomId);
+//     };
+
+//     joinRoom();
+//     socket.on("connect", joinRoom);
+//     return () => socket.off("connect", joinRoom);
+//   }, [roomId, socketRef]);
+
+//   useEffect(() => {
+//     const editor = editorRef.current;
+//     if (editor) {
+//       editor.addCommand(monaco.KeyCode.Enter, () => {
+//         const model = editor.getModel();
+//         const selection = editor.getSelection();
+//         const text = model.getValueInRange(selection);
+//         if (text.match(/^([a-z0-9]+)$/i)) {
+//           editor.executeEdits("emmet", [{ range: selection, text: `<${text}>` }]);
+//         }
+//       });
+//     }
+//   }, []);
+
+//   return (
+//     <div className="h-[370px] border border-gray-700 rounded-md overflow-hidden">
+//       <MonacoEditor
+//         height="370px"
+//         language={language}
+//         theme="vs-dark"
+//         value={code}
+//         onChange={handleCodeChange}
+//         options={{
+//           fontSize: 14,
+//           wordWrap: "on",
+//           autoClosingBrackets: "always",
+//           autoClosingQuotes: "always",
+//           formatOnType: true,
+//           formatOnPaste: true,
+//           minimap: { enabled: false },
+//           scrollBeyondLastLine: false,
+//           tabSize: 2,
+//         }}
+//         onMount={(editor) => {
+//           editorRef.current = editor;
+//         }}
+//       />
+//     </div>
+//   );
+// };
+
+// export default Editor;

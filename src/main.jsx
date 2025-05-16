@@ -27,8 +27,10 @@ import About from "./pages/AboutUs.jsx";
 import Whiteboard from "./components/Terminal/WhiteBoard.jsx";
 import ViewSolvedQuestions from "./components/Dashboard/DashboardComponent/ViewSolvedQuestions.jsx";
 import Students from "./components/Dashboard/DashboardComponent/Students.jsx";
-import AssignmentsSoved from "./components/Dashboard/DashboardComponent/Instructor-Students/AssignmentsSoved.jsx";
+import AssignmentsSolved from "./components/Dashboard/DashboardComponent/Instructor-Students/AssignmentsSolved.jsx";
 import StudentProjects from "./components/Dashboard/DashboardComponent/Instructor-Students/StudentProjects.jsx";
+import Questions from "./components/Dashboard/DashboardComponent/Questions.jsx";
+import ViewSolution from "./components/Dashboard/DashboardComponent/Instructor-Students/ViewSolution.jsx";
 
 const router = createBrowserRouter([
   {
@@ -108,12 +110,12 @@ const router = createBrowserRouter([
             element: <Settings />,
           },
           {
-            path: "/dashboard/students",
+            path: "/dashboard/instructor-projects",
             element: <Students />,
           },
           {
-            path: "/dashboard/solved-assignments",
-            element: <AssignmentsSoved />,
+            path: "/dashboard/solved-assignments/:questionId",
+            element: <AssignmentsSolved />,
           },
           {
             path: "/dashboard/student-projects",
@@ -122,6 +124,14 @@ const router = createBrowserRouter([
           {
             path: "/dashboard/questions-Solved/view-solved-questions",
             element: <ViewSolvedQuestions />,
+          },
+          {
+            path: "/dashboard/my-questions",
+            element: <Questions />,
+          },
+          {
+            path: "/dashboard/view-solution/:studentId",
+            element: <ViewSolution />,
           },
         ],
       },

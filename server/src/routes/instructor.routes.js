@@ -9,6 +9,8 @@ import {
   getMyStudents,
   getMyQuestions,
   getRoomsByRoomIds,
+  getSolvedQuestionData,
+  getSolutionsByStudentId,
 } from "../controllers/instructor.controller.js";
 import authMiddleware from "../middlewares/auth.middleware.js";
 
@@ -27,5 +29,12 @@ router.route("/get-my-students").post(authMiddleware, getMyStudents);
 router.route("/get-my-questions").post(authMiddleware, getMyQuestions);
 
 router.route("/find-room-by-email").post(authMiddleware, getRoomsByRoomIds);
+router
+  .route("/get-solved-question-data")
+  .post(authMiddleware, getSolvedQuestionData);
+  
+router
+  .route("/get-solution-by-studentId")
+  .post(authMiddleware, getSolutionsByStudentId);
 
 export default router;

@@ -30,7 +30,7 @@ const questionSchema = Schema(
     ],
     createdBy: {
       type: mongoose.Types.ObjectId,
-      ref: "User",
+      ref: "Instructor",
     },
     collegeId: {
       type: mongoose.Types.ObjectId,
@@ -39,7 +39,7 @@ const questionSchema = Schema(
     solvedBy: [
       {
         type: mongoose.Types.ObjectId,
-        ref: "User",
+        ref: "Student",
       },
     ],
     solved: {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getMyQuestions } from "../../../../../services/operations/instructorApi";
+import "../../Instructor-Students/scrollbar.css"
 
 const MyQuestions = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -29,18 +30,12 @@ const MyQuestions = ({ onClose }) => {
     <div className="p-6 text-white flex flex-col gap-y-5">
       <div className="flex  justify-between">
         <h1 className="text-2xl font-semibold ">Your Questions</h1>
-        <button
-          onClick={onClose}
-          className="bg-amber-300 text-black px-2 py-1 hover:scale-105 cursor-pointer rounded-md transition-all duration-200"
-        >
-          Back
-        </button>
       </div>
 
       {questions.length === 0 ? (
         <p className="text-gray-500">No questions found.</p>
       ) : (
-        <div className="flex flex-col gap-y-4 max-h-[400px] overflow-y-auto">
+        <div className="flex flex-col gap-y-4  h-[370px] pr-2 overflow-y-auto custom-scrollbar">
           {questions.map((question) => (
             <div
               key={question._id}
@@ -90,8 +85,20 @@ const MyQuestions = ({ onClose }) => {
                 )}
             </div>
           ))}
+       
+          
+         
         </div>
       )}
+
+      <div className="flex justify-center">
+        <button
+          onClick={onClose}
+          className=" px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
+        >
+          Back
+        </button>
+      </div>
     </div>
   );
 };

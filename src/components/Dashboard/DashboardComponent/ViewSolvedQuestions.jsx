@@ -22,43 +22,27 @@ const ViewSolvedQuestions = () => {
   const location = useLocation();
   const assignment = location.state?.question || {};
 
-  console.log("questions in assignment -> ", location.state);
-
-  console.log("Assignment -> ", assignment);
-
   // handle compilation of code
   const handleCompile = async () => {
     try {
-      console.log("🚀 Handle compile started");
-
-      // Dispatch the compileCode action
       const response = await dispatch(
         compileCode({ code, input, lang: language })
       );
 
-      console.log(
-        "🔹 Full Response from API ->",
-        JSON.stringify(response, null, 2)
-      );
-
       if (response && response.result) {
-        console.log("✅ Final output ->", response.result);
         setOutput("Accepted");
       } else {
-        console.error("❌ No output found in response:", response);
         setOutput("No output received.");
       }
     } catch (error) {
-      console.error("❌ Error compiling code:", error);
       setOutput("Error compiling code.");
     }
   };
 
   // submit solution
   const handleSubmit = async () => {
-    console.log("Assignment id -> ",assignment)
     try {
-      const response = await dispatch(
+      await dispatch(
         submitAssignment(
           {
             code,
@@ -69,105 +53,102 @@ const ViewSolvedQuestions = () => {
           user?.user?.accessToken
         )
       );
-      console.log("Submitted -> ", response);
-    } catch (error) {}
+    } catch (error) {
+      // Handle error if needed
+    }
   };
 
-  // handle change if the coding language
+  // handle language change
   const handleChangeLanguage = (e) => {
     const selectedLanguage = e.target.value;
     setLanguage(selectedLanguage);
-
-    setCode(assignment.sampleCode[0]?.[selectedLanguage]);
-
-    console.log("Code -> ", assignment?.sampleCode[0]?.[selectedLanguage]);
+    setCode(assignment.sampleCode?.[0]?.[selectedLanguage] || "");
   };
 
   useEffect(() => {
     if (assignment) {
-      const initialCode = assignment?.code;
-      setLanguage(assignment.language);
-      setCode(initialCode);
+      setLanguage(assignment.language || "java");
+      setCode(assignment.code || "");
     }
   }, [assignment]);
 
   return (
-    <div className=" mx-auto xl:mt-4 h-[80%] xl:h-[83vh] flex flex-col xl:flex-row  gap-x-5  w-[95%] pb-[5rem]">
-      {/* Theory */}
+    <div className="mx-auto  w-[95%] h-[90vh] flex flex-col gap-4">
+      {/* Theory Section */}
       <div
-        className="  w-[90%] mx-auto xl:w-[40%] px-2 flex flex-col gap-y-4 overflow-y-auto "
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        className="overflow-y-auto  rounded p-4 "
+        style={{ maxHeight: "30vh", minHeight: "150px" }}
       >
-        <p className="flex flex-col text-justify">
-          <span className="text-xl">Title : </span>
-          {assignment?.questionId?.title}{" "}
-        </p>
-        <p className="flex flex-col text-justify">
-          <span className="text-xl">Description : </span>
-          {assignment?.questionId?.description}{" "}
-        </p>
+        <div className="flex items-center  gap-x-2">
+          <h2 className="text-xl font-bold text-green-300">Title : </h2>
+          <p className="">{assignment?.questionId?.title || "No Title"}</p>
+        </div>
+
+        <div className="flex flex-col mt-4 gap-y-1">
+          <h2 className="text-xl font-bold text-yellow-300">Description</h2>
+          <p>{assignment?.questionId?.description || "No Description"}</p>
+        </div>
       </div>
 
-      <div className="w-full xl:w-[1px]  xl:h-full bg-white"></div>
-
-      {/* Editor */}
-      <div className=" mx-auto xl:ml-[2rem] ">
-        <div>
-          {/* Language Selector & Run Button */}
-          <div className="flex mb-4 justify-between  p-2">
-            <div className="flex gap-x-4">
-              <select
-                className="border p-2 rounded bg-slate-950 text-white"
-                value={language}
-                onChange={handleChangeLanguage}
-              >
-                <option value="">{assignment?.language}</option>
-              
-              </select>
-              <button
-                className="bg-green-500 text-black px-4 py-2 rounded"
-                onClick={handleCompile}
-              >
-                Run
-              </button>
-              <button
-                className="bg-green-500 text-black px-4 py-2 rounded"
-                onClick={handleSubmit}
-              >
-                Submit
-              </button>
-            </div>
-
-            {/* output */}
-            <div className="flex justify-center items-center gap-x-5">
-              <label className="block font-medium mb-1">Output</label>
-              <p className=" p-2 border w-[10rem]  h-[2rem] rounded bg-gray-100 text-black flex justify-center items-center text-center">
-                {output}
-              </p>
-            </div>
+      {/* Editor Section */}
+      <div className="flex flex-col flex-grow ">
+        {/* Language Selector & Buttons */}
+        <div className="flex flex-wrap justify-between items-center  gap-4 p-4  rounded">
+          <div className="flex gap-x-4 items-center">
+            <select
+              className="border p-2 rounded bg-slate-950 text-white"
+              value={language}
+              onChange={handleChangeLanguage}
+            >
+              <option value="java">Java</option>
+              <option value="cpp">C++</option>
+              <option value="python">Python</option>
+            </select>
+            <button
+              className="bg-green-500 text-black px-4 py-2 rounded"
+              onClick={handleCompile}
+            >
+              Run
+            </button>
+            <button
+              className="bg-green-500 text-black px-4 py-2 rounded"
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
           </div>
 
-          {/* Code Editor */}
-          <CodeMirror
-            value={code}
-            height="25rem"
-            width="100%"
-            theme={dracula}
-            extensions={[
-              language === "Java"
-                ? java()
-                : language === "Python"
-                ? python()
-                : cpp(),
-            ]}
-            onChange={(value) => setCode(value)}
-            className="border w-[20rem] md:w-[40rem] lg:w-[50rem] rounded"
-          />
+          {/* Output Display */}
+          <div className="flex items-center gap-x-3">
+            <label className="font-medium">Output:</label>
+            <p className="p-2 border w-[10rem] h-[2rem] rounded bg-gray-100 text-black flex justify-center items-center text-center">
+              {output}
+            </p>
+          </div>
+        </div>
 
-          <div className="flex flex-col justify-start mt-5 items-start">
-            <p>Marks Obtained : {assignment.marks}/10</p>
-      
-          </div> 
+        {/* Code Editor */}
+        <CodeMirror
+          value={code}
+          height="15rem" // leaves room for buttons above
+          width="100%"
+          theme={dracula}
+          extensions={[
+            language === "java"
+              ? java()
+              : language === "python"
+              ? python()
+              : cpp(),
+          ]}
+          onChange={(value) => setCode(value)}
+          className="border rounded w-[97%] mx-auto"
+        />
+
+        <div className="mt-4 ml-4">
+          <p>
+            Marks Obtained:{" "}
+            {assignment.marks !== undefined ? assignment.marks : "N/A"}/10
+          </p>
         </div>
       </div>
     </div>

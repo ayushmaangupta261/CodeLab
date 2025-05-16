@@ -19,39 +19,38 @@ const StudentsEnrolled = ({ onClose }) => {
   }, [dispatch, token]);
 
   return (
-    <div className="text-white p-5 rounded-md mt-5  ">
+    <div className="text-white p-5 rounded-md mt-5  w-full ">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold">
           Enrolled Students : {students?.length}
         </h3>
-        <button
-          onClick={onClose}
-          className="bg-amber-300 text-black px-2 py-1 hover:scale-105 cursor-pointer rounded-md transition-all duration-200"
-        >
-          Back
-        </button>
       </div>
 
       {students.length === 0 ? (
         <p>No students enrolled yet.</p>
       ) : (
-        <div className="flex flex-col gap-y-4 max-h-[400px] overflow-y-auto">
+        <div className="grid grid-cols-3 gap-y-4  h-[360px]  p-2 gap-x-2 overflow-y-auto">
           {students.map((student) => (
             <div
               key={student._id}
-              className="bg-gray-700 p-3 rounded-md shadow-md"
+              className="
+                bg-gray-800 rounded-xl h-[10rem] w-[19rem] p-4 shadow-lg cursor-pointer border border-transparent 
+                border-indigo-500 transition-all duration-300  flex flex-col gap-y-2"
             >
               <p>
-                <strong>Name :</strong> {student.fullName}
+                <strong className="text-green-300">Name :</strong>{" "}
+                {student.fullName}
               </p>
               <p>
-                <strong>Email :</strong> {student.email}
+                <strong className="text-green-300">Email :</strong>{" "}
+                {student.email}
               </p>
               <p>
-                <strong>Mobile :</strong> {student.mobileNumber}
+                <strong className="text-green-300">Mobile :</strong>{" "}
+                {student.mobileNumber}
               </p>
               <p>
-                <strong>Questions Solved :</strong>{" "}
+                <strong className="text-green-300">Questions Solved :</strong>{" "}
                 {student.questionsSolved?.length || 0}
                 <span>
                   {""} / {user.questions?.length || 0}
@@ -59,9 +58,17 @@ const StudentsEnrolled = ({ onClose }) => {
               </p>
             </div>
           ))}
-          
         </div>
       )}
+
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={onClose}
+          className=" px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
+        >
+          Back
+        </button>
+      </div>
     </div>
   );
 };
