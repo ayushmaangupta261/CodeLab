@@ -42,6 +42,16 @@ const instituteSchema = Schema({
     type: String,
     default: "Institute",
   },
+  accessToken: {
+    type: String,
+    required: false,
+    default: null,
+  },
+  refreshToken: {
+    type: String,
+    required: false,
+    default: null,
+  },
 });
 
 instituteSchema.pre("save", async function (next) {

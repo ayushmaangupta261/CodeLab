@@ -19,7 +19,7 @@ const router = Router();
 //auth
 router.route("/register-instructor").post(registerInstructor);
 router.route("/login-instructor").post(loginInstructor);
-router.route("/logout-instructor").post(logoutInstructor);
+router.route("/logout-instructor").post(authMiddleware, logoutInstructor);
 
 // get all institute route
 router.route("/get-all-college-list").get(authMiddleware, getAllCollegesList);
@@ -32,7 +32,7 @@ router.route("/find-room-by-email").post(authMiddleware, getRoomsByRoomIds);
 router
   .route("/get-solved-question-data")
   .post(authMiddleware, getSolvedQuestionData);
-  
+
 router
   .route("/get-solution-by-studentId")
   .post(authMiddleware, getSolutionsByStudentId);

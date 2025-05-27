@@ -21,10 +21,18 @@ console.log(process.env.CORS_ORIGIN);
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
-    // origin: process.env.CORS_ORIGIN,
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        "http://localhost:3000",
+        "http://192.168.29.197:3000",
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -42,8 +50,9 @@ import assignmentRoutes from "./routes/assignment.routes.js";
 import codeColaborationRoutes from "./routes/codeColaboration.route.js";
 import instrucrtorRoutes from "./routes/instructor.routes.js";
 import roomRoutes from "./routes/room.routes.js";
+import homeRoutes from "./routes/home.routes.js";
 
-// route declaration
+// route declaration  
 app.use("/api/v1/student", studentRoute);
 app.use("/api/v1/code", codeingRoutes);
 app.use("/api/v1/institute", instituteRoutes);
@@ -53,5 +62,7 @@ app.use("/api/v1/room", roomRoutes);
 
 app.use("/api/v1/assignment", assignmentRoutes);
 app.use("/api/v1/instructor", instrucrtorRoutes);
+
+app.use("/api/v1/home-routes", homeRoutes);
 
 export { app };

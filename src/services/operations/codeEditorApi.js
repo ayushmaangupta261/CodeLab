@@ -9,7 +9,7 @@ export const getFileTreeStructure = async () => {
     console.log("Gettings file tree");
 
     const response = await apiConnector("GET", GET_FILE_TREE_API, {});
-    // console.log("response -> ", response);
+   
 
     return response?.data?.tree;
   } catch (error) {

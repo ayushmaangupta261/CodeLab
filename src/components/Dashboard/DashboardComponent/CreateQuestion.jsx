@@ -79,7 +79,7 @@ const CreateQuestion = () => {
 
   return (
     <div>
-      <div className="w-full flex flex-col overflow-y-auto max-h-[80vh] pb-5">
+      <div className="w-full flex flex-col max-h-[70vh] pb-5 ">
         {/* Title */}
         <div className="mt-2">
           <p className="text-gray-100 text-xl text-center">
@@ -89,7 +89,7 @@ const CreateQuestion = () => {
         </div>
 
         {/* Create Question Form */}
-        <div className="w-full mt-5">
+        <div className="w-full mt-5 custom-scrollbar overflow-y-auto ">
           <form
             className="w-full flex flex-col justify-center items-center gap-y-5"
             onSubmit={handleSubmit(onSubmit)} // ✅ Fixed form submission
@@ -127,11 +127,11 @@ const CreateQuestion = () => {
             </div>
 
             {/* Code Editors Wrapper */}
-            <div className="w-[90%] border border-gray-600 rounded-md p-3">
+            <div className="w-[90%] border border-gray-600 rounded-md p-3 ">
               <p className="block text-gray-100 text-sm font-medium mb-2">
                 Code structure
               </p>
-              <div className="max-h-[350px] overflow-auto">
+              <div className="max-h-[350px] overflow-auto custom-scrollbar">
                 {[
                   { lang: "java", extension: java },
                   { lang: "cpp", extension: cpp },
@@ -207,7 +207,7 @@ const CreateQuestion = () => {
             </div>
 
             {/* Submit Button */}
-            <div className="flex mt-2 justify-center">
+            <div className="flex md:mt-2 justify-center">
               <button
                 type="submit"
                 className="bg-amber-300 text-black px-2 py-2 rounded-md hover:scale-105 duration-200 cursor-pointer"

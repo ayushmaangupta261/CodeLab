@@ -93,11 +93,5 @@ export const DashboardLinks = [
     // type:ACCOUNT_TYPE.STUDENT,
     // icon:"VscHistory"
   },
-  {
-    id: 11,
-    // name:"Settings",
-    path: "view-solved-questions",
-    // type:ACCOUNT_TYPE.STUDENT,
-    // icon:"VscHistory"
-  },
+ 
 ];

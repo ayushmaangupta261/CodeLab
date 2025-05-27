@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useSelector } from "react-redux";
 import EditInstructor from "./Settings/EditInstructor";
@@ -11,7 +12,7 @@ const Settings = () => {
   return (
     <div>
       {/* User */}
-      <div> {user?.accountType === "Student" && <EditStudent />}</div>
+      <div className=""> {user?.accountType === "Student" && <EditStudent />}</div>
 
       {/* ---------------------------------------------------------------------------------------------------------------------------------- */}
 

@@ -5,7 +5,7 @@ console.log("Base url -> ", import.meta.env.VITE_APP_BASE_URL);
 export const authEnpoint = {
   Register_Student_API: BASE_URL + "/student/register",
   LogIn_Student_API: BASE_URL + "/student/login",
-  LogOut_Student_API: BASE_URL + "/student/logout",
+  LogOut_Student_API: BASE_URL + "/student/logOut",
   AuthStatus_API: BASE_URL + "/users/auth-status",
 
   // Institute

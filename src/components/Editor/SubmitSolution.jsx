@@ -95,7 +95,7 @@ const SubmitSolution = () => {
   }, [assignment]);
 
   return (
-    <div className=" mx-auto xl:mt-[4rem] h-full xl:h-[83vh] flex flex-col xl:flex-row  gap-x-2  w-[90%] pb-[5rem]">
+    <div className=" mx-auto xl:mt-[2rem] h-full xl:h-[83vh] flex flex-col xl:flex-row  gap-x-2  w-[90%] pb-[5rem]">
       {/* Theory */}
       <div
         className="  w-[90%] mx-auto xl:w-[30%] px-2 flex flex-col gap-y-4 overflow-y-auto "

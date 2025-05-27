@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
@@ -24,7 +24,7 @@ import Notification from "./components/Dashboard/DashboardComponent/Notification
 import SubmitSolution from "./components/Editor/SubmitSolution.jsx";
 import CreateQuestion from "./components/Dashboard/DashboardComponent/CreateQuestion.jsx";
 import About from "./pages/AboutUs.jsx";
-import Whiteboard from "./components/Terminal/WhiteBoard.jsx";
+
 import ViewSolvedQuestions from "./components/Dashboard/DashboardComponent/ViewSolvedQuestions.jsx";
 import Students from "./components/Dashboard/DashboardComponent/Students.jsx";
 import AssignmentsSolved from "./components/Dashboard/DashboardComponent/Instructor-Students/AssignmentsSolved.jsx";
@@ -135,11 +135,7 @@ const router = createBrowserRouter([
           },
         ],
       },
-      // {
-      //   path: "white-board",
-      //   element: <Whiteboard />,
-      // },
-    ],
+      ],
   },
 ]);
 
@@ -154,15 +150,6 @@ createRoot(document.getElementById("root")).render(
         marginTop: "1rem",
         marginRight: "1rem",
       }}
-      // toastOptions={{
-      //   // Global toast styles
-      //   className: "transform transition-all duration-500 ease-in-out",
-      //   style: {
-      //     animation:
-      //       "slideInRight 0.4s ease, slideOutRight 0.4s ease 2.6s forwards",
-      //   },
-
-      // }}
-    />
+          />
   </Provider>
 );

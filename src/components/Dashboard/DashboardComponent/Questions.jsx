@@ -63,7 +63,7 @@ const Questions = () => {
   };
 
   return (
-    <div className="p-6 text-white mx-auto ">
+    <div className="md:p-6 text-white mx-auto ">
       <h2 className="text-2xl font-bold mb-4 text-center">Your Questions</h2>
 
       {loading ? (

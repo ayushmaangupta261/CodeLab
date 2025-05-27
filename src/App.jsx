@@ -1,19 +1,14 @@
 import { useRef } from "react";
-import SignUp from "./components/Auth/SignUp";
-import Template from "./components/Auth/Template";
-import Navbar from "./components/Navbar/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { setModal } from "./redux/slices/authSlice";
-import Home from "./pages/Home";
 import { Outlet } from "react-router-dom";
 import { PeerProvider } from "./providers/PeerProvider";
-import Footer from "./components/Footer/Footer";
+import Navbar from "./components/Navbar/Navbar";
+
 
 function App() {
   const modal = useSelector((state) => state.auth.modal);
   const dispatch = useDispatch();
-  console.log("Modal value: ", modal);
-
   const modalRef = useRef();
 
   const closeModal = (e) => {
@@ -23,17 +18,21 @@ function App() {
   };
 
   return (
-    <div ref={modalRef} onClick={closeModal} className="  bg-[#121212] ">
+    <div
+      ref={modalRef}
+      onClick={closeModal}
+      className="min-h-screen overflow-x-hidden  w-full bg-[#121212] text-white flex flex-col relative"
+    >
       <PeerProvider>
-        <div className="fixed top-0 w-full z-10   ">
-          <Navbar />
-        </div>
-
-        <div className="text-gray-100 flex w-full gap-x-3 pt-[2rem]  h-full ">
-          <Outlet />
-        </div>
+        
+        <Navbar />
 
         
+        <main className="flex-1 mt-8 lg:mt-24 px-4 sm:px-6 lg:px-8">
+          <Outlet />
+        </main>
+
+     
       </PeerProvider>
     </div>
   );

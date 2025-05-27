@@ -1,57 +1,44 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import SignUp from './SignUp'
 import LogIn from './LogIn'
-import cactus from "../../assets/Auth/cactus.png"
 import character from "../../assets/Auth/character.png"
 import { RxCross2 } from "react-icons/rx";
 import { setModal } from '../../redux/slices/authSlice'
 import { useDispatch } from 'react-redux'
 
-
 const Template = () => {
-
     const [showLogIn, setShowLogIn] = useState(true);
-
-    // Toggle login form visibility
-    const toggleLogInForm = () => {
-        setShowLogIn((prev) => !prev); // Toggle between LogIn and SignUp
-    };
-
-    console.log("Login form -> ", showLogIn)
-
-
     const dispatch = useDispatch();
 
+    const toggleLogInForm = () => {
+        setShowLogIn((prev) => !prev);
+    };
+
     return (
-        <div className='flex justify-between  h-[42rem] mx-auto shadow-2xl rounded-3xl bg-white '>
-            {/* left */}
-            <div className='flex justify-start'>
-                {/* Conditionally render SignUp or LogIn */}
-                {showLogIn ? <LogIn toggleLogInForm={toggleLogInForm} /> : <SignUp toggleLogInForm={toggleLogInForm} />}
+        <div className='flex flex-col md:flex-row border md:h-[42rem] mx-auto rounded-3xl shadow-2xl bg-white overflow-hidden'>
+            
+            {/* Left: Login / Signup */}
+            <div className='w-full md:w-1/2 flex justify-center items-center p-6'>
+                {showLogIn ? (
+                    <LogIn toggleLogInForm={toggleLogInForm} />
+                ) : (
+                    <SignUp toggleLogInForm={toggleLogInForm} />
+                )}
             </div>
 
-            {/* right */}
-            <div className="relative w-full h-[42rem]">
-                {/* Image */}
+            {/* Right: Illustration */}
+            <div className="relative  w-full md:w-1/2 h-[20rem] md:h-full bg-blue-200 rounded-b-3xl md:rounded-b-none md:rounded-r-3xl">
+                {/* Background Image */}
                 <img
                     src={character}
                     alt="Character"
-                    className="absolute top-0 left-0 w-auto h-full object-cover z-2 "
+                    className="absolute top-0 left-0 w-full h-full object-cover z-10 rounded-b-3xl md:rounded-b-none md:rounded-r-3xl"
                 />
 
-                {/* Background Div */}
-                <div className=" bg-blue-200 w-[50%] h-[99.8%] object-fill absolute top-0 right-0 z-0 rounded-3xl shadow-xl">
-                </div>
-
-                {/* button */}
-                <div> <button className='absolute right-5 top-5 text-4xl hover:scale-105 duration-200 cursor-pointer  z-5' onClick={() => dispatch(setModal(false))}><RxCross2 /></button></div>
-
+            
             </div>
-
         </div>
-
-
-    )
+    );
 }
 
-export default Template
+export default Template;

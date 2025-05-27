@@ -16,30 +16,23 @@ const ViewSolvedQuestions = () => {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [language, setLanguage] = useState("java");
-  const user = useSelector((state) => state.auth);
 
+  const user = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const location = useLocation();
   const assignment = location.state?.question || {};
 
-  // handle compilation of code
   const handleCompile = async () => {
     try {
       const response = await dispatch(
         compileCode({ code, input, lang: language })
       );
-
-      if (response && response.result) {
-        setOutput("Accepted");
-      } else {
-        setOutput("No output received.");
-      }
+      setOutput(response?.result ? "Accepted" : "No output received.");
     } catch (error) {
       setOutput("Error compiling code.");
     }
   };
 
-  // submit solution
   const handleSubmit = async () => {
     try {
       await dispatch(
@@ -54,11 +47,10 @@ const ViewSolvedQuestions = () => {
         )
       );
     } catch (error) {
-      // Handle error if needed
+      // Optional: handle error
     }
   };
 
-  // handle language change
   const handleChangeLanguage = (e) => {
     const selectedLanguage = e.target.value;
     setLanguage(selectedLanguage);
@@ -73,30 +65,32 @@ const ViewSolvedQuestions = () => {
   }, [assignment]);
 
   return (
-    <div className="mx-auto  w-[95%] h-[90vh] flex flex-col gap-4">
+    <div className="mx-auto w-[100%]   md:max-w-[1280px] md:p-4 h-auto flex flex-col gap-4">
       {/* Theory Section */}
-      <div
-        className="overflow-y-auto  rounded p-4 "
-        style={{ maxHeight: "30vh", minHeight: "150px" }}
-      >
-        <div className="flex items-center  gap-x-2">
-          <h2 className="text-xl font-bold text-green-300">Title : </h2>
-          <p className="">{assignment?.questionId?.title || "No Title"}</p>
+      <div className="overflow-y-auto bg-slate-700 text-white rounded-md p-4 shadow-md max-h-[30vh] min-h-[150px]">
+        <div className="flex flex-wrap items-center gap-2">
+          <h2 className="text-lg font-bold text-green-300">Title:</h2>
+          <p className="break-words">
+            {assignment?.questionId?.title || "No Title"}
+          </p>
         </div>
-
-        <div className="flex flex-col mt-4 gap-y-1">
-          <h2 className="text-xl font-bold text-yellow-300">Description</h2>
-          <p>{assignment?.questionId?.description || "No Description"}</p>
+        <div className="mt-4">
+          <h2 className="text-lg font-bold text-yellow-300 mb-1">
+            Description
+          </h2>
+          <p className="text-sm sm:text-base">
+            {assignment?.questionId?.description || "No Description"}
+          </p>
         </div>
       </div>
 
       {/* Editor Section */}
-      <div className="flex flex-col flex-grow ">
+      <div className="flex flex-col flex-grow gap-4  ">
         {/* Language Selector & Buttons */}
-        <div className="flex flex-wrap justify-between items-center  gap-4 p-4  rounded">
-          <div className="flex gap-x-4 items-center">
+        <div className="flex flex-wrap justify-between items-center gap-4 bg-slate-700 p-4 rounded-md text-white">
+          <div className="flex flex-wrap gap-4 items-center">
             <select
-              className="border p-2 rounded bg-slate-950 text-white"
+              className="border p-2 rounded bg-slate-800 text-white"
               value={language}
               onChange={handleChangeLanguage}
             >
@@ -105,46 +99,49 @@ const ViewSolvedQuestions = () => {
               <option value="python">Python</option>
             </select>
             <button
-              className="bg-green-500 text-black px-4 py-2 rounded"
+              className="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-400 transition"
               onClick={handleCompile}
             >
               Run
             </button>
             <button
-              className="bg-green-500 text-black px-4 py-2 rounded"
+              className="bg-blue-500 text-white px-4 py-2 rounded w-[5rem] sm:w-auto hover:bg-blue-400 transition"
               onClick={handleSubmit}
             >
               Submit
             </button>
           </div>
 
-          {/* Output Display */}
-          <div className="flex items-center gap-x-3">
-            <label className="font-medium">Output:</label>
-            <p className="p-2 border w-[10rem] h-[2rem] rounded bg-gray-100 text-black flex justify-center items-center text-center">
+          {/* Output */}
+          <div className="flex items-center justify-center gap-2 w-full sm:w-auto">
+            <label className="font-semibold">Output:</label>
+            <p className="p-2 border rounded bg-gray-100 text-black h-[2rem] min-w-[8rem] text-center flex justify-center items-center">
               {output}
             </p>
           </div>
         </div>
 
         {/* Code Editor */}
-        <CodeMirror
-          value={code}
-          height="15rem" // leaves room for buttons above
-          width="100%"
-          theme={dracula}
-          extensions={[
-            language === "java"
-              ? java()
-              : language === "python"
-              ? python()
-              : cpp(),
-          ]}
-          onChange={(value) => setCode(value)}
-          className="border rounded w-[97%] mx-auto"
-        />
+        <div className="w-full px-2 sm:px-4 ">
+          <CodeMirror
+            value={code}
+            height="15rem" // slightly reduced for small screens
+            width="100%"
+            theme={dracula}
+            extensions={[
+              language === "java"
+                ? java()
+                : language === "python"
+                ? python()
+                : cpp(),
+            ]}
+            onChange={(value) => setCode(value)}
+            className="border rounded text-sm sm:text-base "
+          />
+        </div>
 
-        <div className="mt-4 ml-4">
+        {/* Marks */}
+        <div className="ml-2 mt-3 text-white">
           <p>
             Marks Obtained:{" "}
             {assignment.marks !== undefined ? assignment.marks : "N/A"}/10

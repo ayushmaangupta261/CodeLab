@@ -118,11 +118,15 @@ const loginInstitute = async (req, res) => {
 };
 
 const logoutInstitute = async (req, res) => {
+  const user = req?.user;
+
   const institute = await Institute.findById(req.user._id);
   if (!institute)
     return res
       .status(400)
       .json({ success: false, message: "Already logged out" });
+
+  console.log("Institute -> ", institute);
 
   institute.accessToken = null;
   institute.refreshToken = null;

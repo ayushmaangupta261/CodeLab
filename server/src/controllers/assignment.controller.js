@@ -7,7 +7,7 @@ import { giveMarks } from "./ai.controller.js";
 import { compileCode } from "./compiler.controller.js";
 import fs from "fs";
 import path from "path";
-import { Student } from "../models/user.model.js";
+import { Student } from "../models/student.model.js";
 
 const getAllAssignments = async (req, res) => {
   try {
@@ -80,156 +80,6 @@ const getAllAssignments = async (req, res) => {
     });
   }
 };
-
-// submit assignment
-// const submitAssignment = async (req, res) => {
-//   try {
-//     const { code, language, assignmentId } = req.body.data;
-//     const user = req.user;
-
-//     // console.log("User id -> ", user._id);
-
-//     if (!code || !language || !assignmentId) {
-//       return res.status(400).json({
-//         message: "Data is incomplete",
-//         success: false,
-//       });
-//     }
-
-//     // Check if temp.<language> file exists
-//     // const tempFilePath = path.join("temp", `temp.${language}`);
-//     if (!fs.existsSync(path.join("temp", `temp.${language}`))) {
-//       console.log("Tell to compile");
-//       return res.status(400).json({
-//         success: false,
-//         message: `Please compile your code first.`,
-//       });
-//     }
-
-//     const marks = await giveMarks(code);
-
-//     const cleanedResponse = marks.replace(/```/g, "").trim();
-//     const result = JSON.parse(cleanedResponse);
-
-//     if (!result) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "error in generating marks",
-//       });
-//     }
-
-//     console.log("Marks-> ", result);
-
-//     if (marks[0] < 5) {
-//       return res.status(201).json({
-//         success: false,
-//         message: "Ypu have scored too low marks",
-//         data: result,
-//       });
-//     }
-
-//     // submit your answer
-//     const submittedSolution = await Solution.findOneAndUpdate(
-//       { questionId: assignmentId, solvedBy: user?._id }, // filter
-//       {
-//         $set: {
-//           questionId: assignmentId,
-//           language,
-//           code,
-//           accepted: true,
-//           marks: result[0],
-//           solvedBy: user?._id,
-//           comment: result[5],
-//         }, // update fields
-//       },
-//       {
-//         new: true, // return the modified document
-//         upsert: true, // create if it doesn't exist
-//       }
-//     );
-
-//     // console.log("Submitted soltion -> ", submittedSolution);
-
-//     if (!submittedSolution) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Error in submitting your answer",
-//       });
-//     }
-
-//     //update the user
-//     const updatedUser = await Student.findByIdAndUpdate(
-//       user?._id,
-//       {
-//         $addToSet: { questionsSolved: assignmentId },
-//       },
-//       { new: true }
-//     );
-
-//     // console.log("updated user -> ", updatedUser);
-
-//     if (!updatedUser) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Error in updating the user",
-//       });
-//     }
-
-//     // update the question
-//     //update the user
-//     const updatedQuestion = await Question.findByIdAndUpdate(
-//       assignmentId,
-//       {
-//         $addToSet: { solvedBy: user?._id },
-//       },
-//       { new: true }
-//     );
-
-//     // console.log("Updated question -> ", updatedQuestion);
-
-//     if (!updatedQuestion) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Error in updating the question",
-//       });
-//     }
-
-//     // server cleanup
-//     const deletPath = path.join("temp", `temp.${language}`);
-//     if (fs.existsSync(deletPath)) {
-//       await fs.promises.unlink(deletPath);
-//       console.log(`Deleted temp file: ${deletPath}`);
-//     }
-//     // Delete all folders inside the temp directory
-//     const tempDir = path.join("temp");
-
-//     if (fs.existsSync(tempDir)) {
-//       const entries = await fs.promises.readdir(tempDir, {
-//         withFileTypes: true,
-//       });
-
-//       for (const entry of entries) {
-//         const fullPath = path.join(tempDir, entry.name);
-//         if (entry.isDirectory()) {
-//           await fs.promises.rm(fullPath, { recursive: true, force: true });
-//           console.log(`Deleted folder: ${fullPath}`);
-//         }
-//       }
-//     }
-
-//     return res.status(200).json({
-//       success: true,
-//       message: "Submitted 👍",
-//       data: result,
-//     });
-//   } catch (error) {
-//     console.log("Error in submit assignment -> ", error);
-//     return res.status(400).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// };
 
 const submitAssignment = async (req, res) => {
   try {
@@ -426,7 +276,7 @@ const completedAssignments = async (req, res) => {
     return res.status(200).json({
       success: true,
       questionsSolved: solvedQuestions,
-      totalQuestions: findUser.instructor.questions.length,
+      totalQuestions: findUser?.instructor?.questions?.length,
     });
   } catch (error) {
     console.log("error in completed assignments -> ", error);

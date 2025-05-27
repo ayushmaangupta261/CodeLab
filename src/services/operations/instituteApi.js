@@ -79,7 +79,7 @@ export const loginInstitute = (data, navigate) => async (dispatch) => {
   }
 };
 
-export const logoutInstitute = (navigate, token) => async (dispatch) => {
+export const logoutInstitute = (token, navigate) => async (dispatch) => {
   try {
     // Clear institute authentication state
     dispatch(setUser(null));
@@ -89,21 +89,21 @@ export const logoutInstitute = (navigate, token) => async (dispatch) => {
 
     // console.log("Token -> ", token);
 
-    // const response = await apiConnector(
-    //   "POST",
-    //   Log_Out_Institute_Api, // Make sure this constant is defined
-    //   {},
-    //   {
-    //     Authorization: `Bearer ${token}`,
-    //   }
-    // );
+    const response = await apiConnector(
+      "POST",
+      Log_Out_Institute_Api, // Make sure this constant is defined
+      {},
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    );
 
-    // console.log("Logout Response in api -> ", response);
+    console.log("Logout Response in api -> ", response);
 
-    // if (response?.data?.success) {
-    toast.success("Institute Logged out successfully");
-    navigate("/");
-    // }
+    if (response?.data?.success) {
+      toast.success("Institute Logged out successfully");
+      navigate("/");
+    }
   } catch (error) {
     console.error("Error during institute logout:", error);
     toast.error("Unable to logout");

@@ -1,9 +1,10 @@
-import { Student } from "../models/user.model.js";
+import { Student } from "../models/student.model.js";
 import { Institute } from "../models/institute.model.js";
 import { Instructor } from "../models/instructor.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import { log } from "console";
 
 // Function to generate access and refresh token
 // const generateAccessAndRefereshTokens = async (userId, role) => {
@@ -394,6 +395,8 @@ const registerStudent = async (req, res) => {
 const loginStudent = async (req, res) => {
   const { email, password } = req.body;
 
+  console.log("Student -> ", req.body);
+
   const student = await Student.findOne({ email })
     .populate({
       path: "questionsSolved",
@@ -442,11 +445,17 @@ const loginStudent = async (req, res) => {
 
 // Logout
 const logoutStudent = async (req, res) => {
+  const user = req.user;
+
+  console.log("USer -> ", user);
+
   const student = await Student.findById(req.user._id);
   if (!student)
     return res
       .status(400)
       .json({ success: false, message: "Already logged out" });
+
+  console.log("Logging out");
 
   student.accessToken = null;
   student.refreshToken = null;

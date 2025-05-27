@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getMyStudents } from "../../../../../services/operations/instructorApi.js";
 
-const StudentsEnrolled = ({ onClose }) => {
+const StudentsEnrolled = ({ toggleStudentsEnrolled }) => {
   const { user } = useSelector((state) => state.auth);
   const token = user?.accessToken;
   const dispatch = useDispatch();
@@ -29,12 +29,12 @@ const StudentsEnrolled = ({ onClose }) => {
       {students.length === 0 ? (
         <p>No students enrolled yet.</p>
       ) : (
-        <div className="grid grid-cols-3 gap-y-4  h-[360px]  p-2 gap-x-2 overflow-y-auto">
+        <div className="grid grid-cols-3 gap-y-4  h-[20rem]  p-2 gap-x-4 overflow-y-auto">
           {students.map((student) => (
             <div
               key={student._id}
               className="
-                bg-gray-800 rounded-xl h-[10rem] w-[19rem] p-4 shadow-lg cursor-pointer border border-transparent 
+                bg-gray-700 rounded-xl h-[10rem] w-[19rem] p-4 shadow-lg cursor-pointer border border-transparent 
                 border-indigo-500 transition-all duration-300  flex flex-col gap-y-2"
             >
               <p>
@@ -63,7 +63,7 @@ const StudentsEnrolled = ({ onClose }) => {
 
       <div className="flex justify-center mt-4">
         <button
-          onClick={onClose}
+          onClick={toggleStudentsEnrolled}
           className=" px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
         >
           Back

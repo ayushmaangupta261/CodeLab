@@ -40,6 +40,7 @@
     "monaco-editor": "^0.52.2",
     "nodemon": "^3.1.9",
     "react": "^19.0.0",
+    "react-countup": "^6.5.3",
     "react-dom": "^19.0.0",
     "react-draggable": "^4.4.6",
     "react-hook-form": "^7.54.2",

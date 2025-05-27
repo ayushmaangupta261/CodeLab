@@ -97,11 +97,12 @@ export const login = (data, navigate) => async (dispatch) => {
 };
 
 // log out user
-export const logout = (navigate) => async (dispatch) => {
+export const logout = (token, navigate) => async (dispatch) => {
   try {
     // Clear authentication state
     // dispatch(setToken(null));
     dispatch(setUser(null));
+    console.log("Token -> ", token);
 
     // const userString = localStorage.getItem("user");
     // const user = userString ? JSON.parse(userString) : null;
@@ -112,24 +113,24 @@ export const logout = (navigate) => async (dispatch) => {
 
     // console.log("Token -> ", token);
 
-    // const response = await apiConnector(
-    //   "POST",
-    //   LogOut_Student_API,
-    //   {},
-    //   {
-    //     Authorization: `Bearer ${token}`,
-    //   }
-    // );
+    const response = await apiConnector(
+      "POST",
+      LogOut_Student_API,
+      {},
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    );
 
-    // console.log("Logout Response in api -> ", response);
+    console.log("Logout Response in api -> ", response);
 
-    // if (response?.data?.success) {
-    // Provide feedback
-    toast.success("Logged out successfully");
+    if (response?.data?.success) {
+      // Provide feedback
+      toast.success("Logged out successfully");
 
-    // Navigate to home page
-    navigate("/");
-    // }
+      // Navigate to home page
+      navigate("/");
+    }
   } catch (error) {
     console.error("Error during logout:", error);
     toast.error("Unable to logout");

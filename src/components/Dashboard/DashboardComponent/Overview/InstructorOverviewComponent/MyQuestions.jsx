@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getMyQuestions } from "../../../../../services/operations/instructorApi";
 import "../../Instructor-Students/scrollbar.css"
 
-const MyQuestions = ({ onClose }) => {
+const MyQuestions = ({ toggleMyQuestions }) => {
   const dispatch = useDispatch();
   const [questions, setQuestions] = useState([]);
   const [expandedQuestion, setExpandedQuestion] = useState(null); // To track which question's solvedBy list to show
@@ -93,7 +93,7 @@ const MyQuestions = ({ onClose }) => {
 
       <div className="flex justify-center">
         <button
-          onClick={onClose}
+          onClick={toggleMyQuestions}
           className=" px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
         >
           Back

@@ -52,11 +52,11 @@ const SignUp = ({ toggleLogInForm }) => {
   };
 
   return (
-    <div className="flex justify-center items-center h-[40rem] w-[25rem] py-3 px-3 ml-5 ">
+    <div className="flex md:w-[95%] justify-center items-center h-[40rem] xl:w-[25rem] py-3 px-3 xl:ml-5">
       {authLoading ? (
-        <div className="card h-[5rem] flex justify-center items-center ">
+        <div className="card h-[5rem] flex justify-center items-center">
           <div className="loader">
-            <div className="words ">
+            <div className="words">
               <span className="word">Verifying</span>
               <span className="word">Processing</span>
               <span className="word">Signning Up</span>
@@ -65,26 +65,23 @@ const SignUp = ({ toggleLogInForm }) => {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col">
+        <div className="flex flex-col w-[100%]">
           <div className="flex flex-col">
-            <p className="">Hey There !!!</p>
+            <p>Hey There !!!</p>
             <p className="text-4xl font-semibold">Sign Up</p>
           </div>
 
           {/* Form */}
-          <div className="flex flex-col gap-y-2 mt-7">
-            <form
-              onSubmit={handleSubmit(submitForm)}
-              className="flex flex-col gap-y-3"
-            >
+          <div className="flex flex-col w-[100%] gap-y-2 mt-7">
+            <form onSubmit={handleSubmit(submitForm)} className="flex flex-col gap-y-3">
               {/* Account Type */}
               <div className="flex flex-col">
                 <p>Account Type:</p>
-                <div className="flex justify-between px-1 py-1 rounded-xl md:rounded-full bg-richblack-800 w-[20rem]">
+                <div className="flex justify-between px-1 py-1 rounded-xl xl:rounded-full bg-richblack-800 w-[20rem]">
                   {["Student", "Instructor", "Institute"].map((type) => (
                     <label
                       key={type}
-                      className={`cursor-pointer px-3 py-2 rounded-xl border md:rounded-full transition-all duration-200 hover:scale-105 ${
+                      className={`cursor-pointer px-3 py-2 rounded-xl transition-all duration-200 hover:scale-105 ${
                         accountType === type
                           ? "bg-blue-400 text-richblack-5 font-medium border-blue-600"
                           : "text-richblack-200 border-black"
@@ -104,11 +101,11 @@ const SignUp = ({ toggleLogInForm }) => {
               </div>
 
               {/* Full Name */}
-              <div className="flex flex-col">
+              <div className="flex flex-col w-full">
                 <label>
                   {accountType === "Institute" ? "Name of Institute:" : "Full Name:"}
                 </label>
-                <div className="relative w-[20rem]">
+                <div className="relative xl:w-[20rem]">
                   <input
                     type="text"
                     {...register("fullName", { required: true })}
@@ -125,7 +122,7 @@ const SignUp = ({ toggleLogInForm }) => {
               </div>
 
               {/* Email */}
-              <div className="flex flex-col">
+              <div className="flex flex-col xl:w-[20rem]">
                 <label>Email:</label>
                 <input
                   type="email"
@@ -136,7 +133,7 @@ const SignUp = ({ toggleLogInForm }) => {
                       message: "Invalid email address",
                     },
                   })}
-                  className="bg-gray-500 w-[20rem] rounded-md h-[2rem] px-1 hover:scale-105 duration-200"
+                  className="bg-gray-500 w-full rounded-md h-[2rem] px-1 hover:scale-105 duration-200"
                 />
                 {errors.email && (
                   <p className="text-red-500">{errors.email.message}</p>
@@ -146,7 +143,7 @@ const SignUp = ({ toggleLogInForm }) => {
               {/* Password */}
               <div className="flex flex-col">
                 <label>Password:</label>
-                <div className="relative w-[20rem]">
+                <div className="relative xl:w-[20rem]">
                   <input
                     type={showPassword ? "text" : "password"}
                     {...register("password", {
@@ -174,7 +171,7 @@ const SignUp = ({ toggleLogInForm }) => {
               {/* Confirm Password */}
               <div className="flex flex-col">
                 <label>Confirm Password:</label>
-                <div className="relative w-[20rem]">
+                <div className="relative xl:w-[20rem]">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     {...register("confirmPassword", {
@@ -200,10 +197,10 @@ const SignUp = ({ toggleLogInForm }) => {
               </div>
 
               {/* Submit Button */}
-              <div className="flex mt-2 justify-center w-[20rem]">
+              <div className="flex mt-2 justify-center xl:w-[20rem]">
                 <button
                   type="submit"
-                  className="bg-amber-400 text-black px-2 py-2 rounded-[5rem] w-[8rem] hover:scale-95 duration-200 cursor-pointer"
+                  className="bg-amber-400 text-black px-2 py-2 rounded-md w-full hover:scale-95 duration-200 cursor-pointer"
                 >
                   SignUp
                 </button>
@@ -212,8 +209,8 @@ const SignUp = ({ toggleLogInForm }) => {
           </div>
 
           {/* OAuth Section */}
-          <div className="flex flex-col w-[20rem] mt-2 items-center justify-center gap-y-3">
-            <p className="text-sm">
+          <div className="flex flex-col xl:w-[20rem] mt-10  items-center justify-center gap-y-3">
+            {/* <p className="text-sm">
               or <span className="text-blue-400 select-none">SignUp with</span>
             </p>
             <div className="flex items-center justify-between gap-x-10">
@@ -223,7 +220,7 @@ const SignUp = ({ toggleLogInForm }) => {
               <button className="w-[5rem] h-[3rem] border border-blue-300 bg-white flex justify-center items-center rounded-3xl hover:scale-105 duration-200 cursor-pointer">
                 <img src={github} alt="GitHub" className="w-[30%]" />
               </button>
-            </div>
+            </div> */}
             <p className="text-sm">
               Already have an account?{" "}
               <button

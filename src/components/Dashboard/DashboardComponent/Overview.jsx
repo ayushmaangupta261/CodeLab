@@ -8,7 +8,7 @@ const Overview = () => {
   const { user } = useSelector((state) => state.auth);
 
   return (
-    <div className="w-full h-full p-10">
+    <div className="w-full h-full p-10 ">
       {user?.accountType === "Institute" && <InstituteOverview />}
 
       {user?.accountType === "Student" && <StudentOverview />}

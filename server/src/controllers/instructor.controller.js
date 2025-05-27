@@ -5,6 +5,7 @@ import { SampleCode } from "../models/sampleCode.model.js";
 import { Institute } from "../models/institute.model.js";
 import { Room } from "../models/room.model.js";
 import { Solution } from "../models/solution.model.js";
+import { Student } from "../models/student.model.js";
 
 const generateInstructorTokens = async (instructorId) => {
   const instructor = await Instructor.findById(instructorId);
@@ -107,7 +108,7 @@ const loginInstructor = async (req, res) => {
 
 const logoutInstructor = async (req, res) => {
   console.log("Req. body -> ", req.user);
-  const instructor = await Instructor.findById(requser._id);
+  const instructor = await Instructor.findById(req?.user._id);
   if (!instructor)
     return res
       .status(400)
@@ -259,11 +260,104 @@ const getAllCollegesList = async (req, res) => {
 };
 
 // edit details
+// const editDetails = async (req, res) => {
+//   try {
+//     const { college, subject, mobileNumber } = req.body.data;
+
+//     console.log("Req body -> ", req.body.data);
+
+//     if (!college || !subject || !mobileNumber) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Provide all the details",
+//       });
+//     }
+
+//     const user = req.user;
+
+//     if (!user) {
+//       return res.status(401).json({
+//         success: false,
+//         message: "Unauthorized in edit instructor",
+//       });
+//     }
+
+//     // Fetch current instructor to get previous college
+//     const currentInstructor = await Instructor.findById(user._id);
+
+//     if (!currentInstructor) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Instructor not found",
+//       });
+//     }
+
+//     const previousCollegeId = currentInstructor.collegeId;
+
+//     // If instructor is already in a different college, remove them from the old one
+//     if (previousCollegeId && previousCollegeId.toString() !== college) {
+//       // Remove instructor from previous institute
+//       await Institute.findByIdAndUpdate(previousCollegeId, {
+//         $pull: { instructorsPresent: user._id },
+//       });
+//     }
+
+//     // Clear students enrolled under this instructor and update other fields
+//     const instructorInDB = await Instructor.findByIdAndUpdate(
+//       user._id,
+//       {
+//         $set: {
+//           students: [],
+//           questions: [],
+//           collegeId: college,
+//           mobileNumber: mobileNumber,
+//           subject: subject,
+//         },
+//       },
+//       { new: true }
+//     )
+//       .populate("collegeId")
+//       .populate("questions")
+//       .populate("students");
+
+//     if (!instructorInDB) {
+//       return res.status(500).json({
+//         success: false,
+//         message: "Error updating instructor",
+//       });
+//     }
+
+//     delete instructorInDB.password;
+//     delete instructorInDB.refreshToken;
+
+//     console.log("Updated Instructor ->", instructorInDB);
+
+//     // Add instructor to new college
+//     const instituteInDB = await Institute.findByIdAndUpdate(
+//       college,
+//       { $addToSet: { instructorsPresent: user._id } },
+//       { new: true }
+//     );
+
+//     console.log("Updated Institute ->", instituteInDB);
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Instructor details updated successfully",
+//       data: instructorInDB,
+//     });
+//   } catch (error) {
+//     console.error("Error in editDetails:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Server error while editing details",
+//     });
+//   }
+// };
+
 const editDetails = async (req, res) => {
   try {
     const { college, subject, mobileNumber } = req.body.data;
-
-    console.log("Req body -> ", req.body.data);
 
     if (!college || !subject || !mobileNumber) {
       return res.status(400).json({
@@ -281,7 +375,7 @@ const editDetails = async (req, res) => {
       });
     }
 
-    // Fetch current instructor to get previous college
+    // Fetch current instructor
     const currentInstructor = await Instructor.findById(user._id);
 
     if (!currentInstructor) {
@@ -293,15 +387,20 @@ const editDetails = async (req, res) => {
 
     const previousCollegeId = currentInstructor.collegeId;
 
-    // If instructor is already in a different college, remove them from the old one
+    // If instructor switched college, remove from old college
     if (previousCollegeId && previousCollegeId.toString() !== college) {
-      // Remove instructor from previous institute
       await Institute.findByIdAndUpdate(previousCollegeId, {
         $pull: { instructorsPresent: user._id },
       });
     }
 
-    // Clear students enrolled under this instructor and update other fields
+    // **Remove instructor from all students that reference this instructor**
+    await Student.updateMany(
+      { instructor: user._id }, // Find students with this instructor
+      { $unset: { instructor: "" } } // Remove the instructor field
+    );
+
+    // Update instructor details, clear students & questions arrays
     const instructorInDB = await Instructor.findByIdAndUpdate(
       user._id,
       {
@@ -329,16 +428,12 @@ const editDetails = async (req, res) => {
     delete instructorInDB.password;
     delete instructorInDB.refreshToken;
 
-    console.log("Updated Instructor ->", instructorInDB);
-
     // Add instructor to new college
-    const instituteInDB = await Institute.findByIdAndUpdate(
+    await Institute.findByIdAndUpdate(
       college,
       { $addToSet: { instructorsPresent: user._id } },
       { new: true }
     );
-
-    console.log("Updated Institute ->", instituteInDB);
 
     return res.status(200).json({
       success: true,

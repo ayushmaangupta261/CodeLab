@@ -76,19 +76,30 @@ const EditInstructor = () => {
   };
 
   return (
-    <div className="p-6 w-[80%] mx-auto">
+    <div className="px-4 py-6 w-full max-w-3xl mx-auto">
       <p className="text-2xl text-center font-semibold mb-6">
         Hey <span className="text-emerald-500">{user?.fullName}</span>, edit
         your profile
       </p>
 
-      <div className="mt-6 flex flex-col gap-y-8 relative">
-        <div className="flex items-center gap-x-5">
-          <label className="font-medium">Email :</label>
-          <p className="text-gray-200">{user?.email}</p>
+      <div className="flex flex-col gap-y-6">
+        {/* Email (read-only) */}
+        <div className="flex flex-col ">
+          <label className="font-medium w-32 shrink-0 mb-1">Email:</label>
+          <input
+            value={user?.email}
+            readOnly
+            onClick={() =>
+              alert(
+                "You can't edit your email address without adminitrator permission"
+              )
+            }
+            className="w-full px-4 py-2 border tex-sm border-gray-300 rounded-lg text-black focus:outline-none focus:ring focus:border-emerald-500"
+          />
         </div>
 
-        <div>
+        {/* Mobile Number */}
+        <div className="flex flex-col">
           <label className="block font-medium mb-1">Mobile Number</label>
           <input
             type="text"
@@ -100,7 +111,7 @@ const EditInstructor = () => {
         </div>
 
         {/* College Dropdown */}
-        <div className="relative">
+        <div className="flex flex-col relative">
           <label className="block font-medium mb-1">College</label>
           <div
             className="w-full px-4 py-2 border rounded-lg bg-white text-black flex justify-between items-center cursor-pointer hover:border-emerald-500"
@@ -108,12 +119,17 @@ const EditInstructor = () => {
           >
             {collegeList.find((c) => c._id === college)?.name ||
               "Select a college"}
-            {showCollegeList ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+            {showCollegeList ? (
+              <ChevronUp size={20} />
+            ) : (
+              <ChevronDown size={20} />
+            )}
           </div>
+
           <AnimatePresence>
             {showCollegeList && (
               <motion.ul
-                className="absolute bottom-full mb-2 w-full max-h-48 overflow-auto border border-gray-300 rounded-lg bg-white z-20 text-black shadow-lg"
+                className="absolute top-full mt-1 w-full max-h-48 overflow-auto border border-gray-300 rounded-lg bg-white z-20 text-black shadow-lg"
                 initial="hidden"
                 animate="visible"
                 exit="exit"
@@ -122,7 +138,7 @@ const EditInstructor = () => {
                 {collegeList.map((clg) => (
                   <li
                     key={clg._id}
-                    className="px-4 py-2 hover:bg-emerald-100 transition-colors cursor-pointer border"
+                    className="px-4 py-2 hover:bg-emerald-100 transition-colors cursor-pointer border-b"
                     onClick={() => {
                       setCollege(clg._id);
                       setShowCollegeList(false);
@@ -137,7 +153,7 @@ const EditInstructor = () => {
         </div>
 
         {/* Subject Dropdown */}
-        <div className="relative">
+        <div className="flex flex-col relative">
           <label className="block font-medium mb-1">Subject</label>
           <div
             className={`w-full px-4 py-2 border rounded-lg bg-white text-black flex justify-between items-center cursor-pointer ${
@@ -157,10 +173,11 @@ const EditInstructor = () => {
               <ChevronDown size={20} />
             )}
           </div>
+
           <AnimatePresence>
             {showSubjectList && subjectsList.length > 0 && (
               <motion.ul
-                className="absolute bottom-full mb-2 w-full max-h-48 overflow-auto border border-gray-300 rounded-lg bg-white z-20 text-black shadow-lg"
+                className="absolute top-full mt-1 w-full max-h-48 overflow-auto border border-gray-300 rounded-lg bg-white z-20 text-black shadow-lg"
                 initial="hidden"
                 animate="visible"
                 exit="exit"
@@ -169,7 +186,7 @@ const EditInstructor = () => {
                 {subjectsList.map((subj, index) => (
                   <li
                     key={index}
-                    className="px-4 py-2 hover:bg-emerald-100 transition-colors cursor-pointer border"
+                    className="px-4 py-2 hover:bg-emerald-100 transition-colors cursor-pointer border-b"
                     onClick={() => {
                       setSubject(subj);
                       setShowSubjectList(false);
@@ -183,6 +200,7 @@ const EditInstructor = () => {
           </AnimatePresence>
         </div>
 
+        {/* Save Button */}
         <button
           onClick={handleSave}
           className="bg-emerald-500 font-semibold text-black px-6 py-3 rounded-lg hover:bg-emerald-700 transition-colors self-start"
