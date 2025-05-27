@@ -2,7 +2,7 @@
 
 **Code Lab** is a collaborative online coding platform that enables real-time code sharing, editing, and terminal execution. Users can join or create rooms, interact via a shared terminal, and comes with many more featutes.
 
-> 🚀 [Live App](https://code-lab-fty3.onrender.com/)
+
 
 ---
 
