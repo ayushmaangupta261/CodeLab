@@ -46,10 +46,10 @@ const QuestionsSolved = () => {
         {/* Gauge */}
         <div className="h-[5rem] sm:h-[10rem]  ">
           <Gauge
-            value={solvedQuestions?.length || 0}
+            value={solvedQuestions?.length || "-"}
             startAngle={-110}
             endAngle={110}
-            valueMax={totalQuestions || 100}
+            valueMax={totalQuestions || "-"}
             text={({ value, valueMax }) => `${value} / ${valueMax}`}
             sx={(theme) => ({
               [`& .MuiGauge-valueText`]: {
@@ -67,8 +67,8 @@ const QuestionsSolved = () => {
         {/* Text Stats */}
         <div className="text-white  text-sm md:text-lg">
           <ul className="space-y-2">
-            <li><strong>Solved:</strong> {solvedQuestions?.length}</li>
-            <li><strong>Total Questions:</strong> {totalQuestions || 100}</li>
+            <li><strong>Solved:</strong> {solvedQuestions?.length || "-"}</li>
+            <li><strong>Total Questions:</strong> {totalQuestions || "-"}</li>
           </ul>
         </div>
       </div>
