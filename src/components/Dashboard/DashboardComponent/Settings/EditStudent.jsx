@@ -92,7 +92,7 @@ const EditStudent = () => {
             className="w-full px-4 py-2 border rounded-md bg-white text-black flex justify-between items-center cursor-pointer hover:border-emerald-500"
             onClick={() => toggleDropdown("college")}
           >
-            {collegeList.find((c) => c._id === college)?.name ||
+            {collegeList?.find((c) => c._id === college)?.name ||
               "Select a college"}
             {showCollegeList ? (
               <ChevronUp size={20} />
@@ -154,7 +154,7 @@ const EditStudent = () => {
                   variants={dropdownVariants}
                 >
                   {collegeList
-                    .find((clg) => clg._id === college)
+                    ?.find((clg) => clg._id === college)
                     ?.subjects?.map((subj, index) => (
                       <li
                         key={index}
@@ -200,7 +200,7 @@ const EditStudent = () => {
                   variants={dropdownVariants}
                 >
                   {collegeList
-                    .find((clg) => clg._id === college)
+                    ?.find((clg) => clg._id === college)
                     ?.instructorsPresent?.filter(
                       (inst) => inst.subject === subject
                     )

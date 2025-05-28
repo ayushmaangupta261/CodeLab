@@ -40,7 +40,7 @@ const EditInstructor = () => {
   }, [dispatch, user.accessToken]);
 
   useEffect(() => {
-    const selectedCollege = collegeList.find((clg) => clg._id === college);
+    const selectedCollege = collegeList?.find((clg) => clg._id === college);
     if (selectedCollege) {
       setSubjectsList(selectedCollege.subjects || []);
       if (!selectedCollege.subjects.includes(subject)) {
@@ -117,7 +117,7 @@ const EditInstructor = () => {
             className="w-full px-4 py-2 border rounded-lg bg-white text-black flex justify-between items-center cursor-pointer hover:border-emerald-500"
             onClick={toggleCollegeDropdown}
           >
-            {collegeList.find((c) => c._id === college)?.name ||
+            {collegeList?.find((c) => c._id === college)?.name ||
               "Select a college"}
             {showCollegeList ? (
               <ChevronUp size={20} />
